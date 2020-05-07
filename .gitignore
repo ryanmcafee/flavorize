@@ -1,0 +1,6 @@
+.terraform
+out.plan
+kubeconfig
+build
+.env
+terraform.tfvars
