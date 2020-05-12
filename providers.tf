@@ -3,6 +3,16 @@ provider "azurerm" {
     features {}
 }
 
+variable "do_token" {
+  default = ""
+}
+
+# Configure the DigitalOcean Provider
+provider "digitalocean" {
+  version = "~> 1.18"
+  token = var.do_token
+}
+
 provider "local" {
   version = "~> 1.4"
 }
@@ -16,8 +26,6 @@ provider "helm" {
   kubernetes {
     load_config_file       = false
     host                   = module.k8s.host
-    username               = module.k8s.cluster_username
-    password               = module.k8s.cluster_password
     client_certificate     = base64decode(module.k8s.client_certificate)
     client_key             = base64decode(module.k8s.client_key)
     cluster_ca_certificate = base64decode(module.k8s.cluster_ca_certificate)
@@ -28,8 +36,6 @@ provider "kubernetes" {
   version = "~> 1.11"
   load_config_file       = false
   host                   = module.k8s.host
-  username               = module.k8s.cluster_username
-  password               = module.k8s.cluster_password
   client_certificate     = base64decode(module.k8s.client_certificate)
   client_key             = base64decode(module.k8s.client_key)
   cluster_ca_certificate = base64decode(module.k8s.cluster_ca_certificate)

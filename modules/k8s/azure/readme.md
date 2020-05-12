@@ -108,7 +108,7 @@ A sample terraform variable is included with this repository. It includes predef
 
 In order to start using the sample terraform.tfvars file run the following command:
 
-    cp terraform.tfvars.example terraform.tfvars
+    cp examples/terraform.tfvars.example.azure terraform.tfvars
 
 After doing so, you will want to set any variables in the terraform.tfvars file that is expecting a replaced value (notably the arm_ variables).
 
