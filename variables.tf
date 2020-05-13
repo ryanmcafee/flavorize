@@ -1,17 +1,31 @@
-variable arm_subscription_id {}
+variable arm_subscription_id {
+    type = string
+    default = ""
+}
 
-variable arm_client_id {}
+variable arm_client_id {
+    type = string
+    default = ""
+}
 
-variable arm_client_secret {}
+variable arm_client_secret {
+    type = string
+    default = ""
+}
 
-variable cloud_provider {}
+variable cloud_provider {
+    type = string
+    default = "none"
+}
 
 variable environment {
-  default = "Devlab"
+    type = string
+    default = "dev"
 }
 
 variable operator {
-  default = "DevOps"
+    type = string
+    default = "DevOps"
 }
 
 variable agent_count {
@@ -31,70 +45,87 @@ variable enable_auto_scaling {
 }
 
 variable dns_prefix {
+    type = string
     default = "k8s"
 }
 
 variable cluster_name {
+    type = string
     default = "k8s"
 }
 
 variable resource_group_name {
+    type = string
     default = "azure-k8s"
 }
 
 variable location {
+    type = string
     default = "East US"
 }
 
 variable kubernetes_version {
+    type = string
     default = "1.16.7"
 }
 
 variable node_disk_size {
+    type = string
     default = 40
 }
 
 variable network_plugin {
+    type = string
     default = "azure"
 }
 
 variable network_policy {
+    type = string
     default = "calico"
 }
 
 variable service_cidr {
+    type = string
     default = "172.100.0.0/24"
 }
 
 variable dns_service_ip {
+    type = string
     default = "172.100.0.10"
 }
 
 variable docker_bridge_cidr {
+    type = string
     default = "172.101.0.1/16"
 }
 
 variable load_balancer_sku {
+    type = string
     default = "Standard"
 }
 
 variable linux_profile_admin_username {
+    type = string
     default = "ubuntu"
 }
 
 variable ssh_public_key {
+    type = string
     default = "~/.ssh/id_rsa.pub"
 }
 
 variable default_node_pool_name {
+    type = string
     default = "agentpool"
 }
 
 variable default_node_pool_vm_size {
+    type = string
     default = "Standard_B4ms"
 }
 
 variable enable_kube_dashboard {
+    type = string
     default = true
 }
 
@@ -122,13 +153,25 @@ variable externaldns_helm_chart_version {
     default = "2.22.1"
 }
 
-variable dns_domains {}
+variable dns_domains {
+    type = string
+    default = ""
+}
 
-variable dns_api_token {}
+variable dns_api_token {
+    type = string
+    default = ""
+}
 
-variable dns_api_key {}
+variable dns_api_key {
+    type = string
+    default = ""
+}
 
-variable dns_api_email {}
+variable dns_api_email {
+    type = string
+    default = ""
+}
 
 variable certmanager_provider {
     type = string

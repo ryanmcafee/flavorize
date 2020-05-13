@@ -1,0 +1,33 @@
+# Specific to digitalocean cloud_provider
+cloud_provider="digitalocean"
+do_token="yourdigitaloceanapitoken"
+cluster_name="k8s-do"
+location="nyc3"
+kubernetes_version="1.17.5-do.0"
+default_node_pool_name="agentpool"
+default_node_pool_vm_size="s-2vcpu-2gb"
+agent_count="1"
+enable_auto_scaling="true"
+autoscale_min_count="1"
+autoscale_max_count="3"
+environment="dev"
+operator="DevOps"
+
+# Set up k8s components
+
+# Valid options are: cloudflare, none
+certmanager_provider="none"
+# Valid options are: cloudflare, none
+externaldns_provider="none"
+# Valid options are: nginx, none
+ingress_provider="nginx"
+# Helm chart versions
+certmanager_helm_chart_version="0.15.0"
+externaldns_helm_chart_version="2.22.1"
+ingress_helm_chart_version="2.1.0"
+# Domains that you wish to issue certs and create external dns records for
+dns_domains=""
+# Your cloudflare legacy api key
+dns_api_key=""
+# Your cloudflare email address
+dns_api_email=""

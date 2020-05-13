@@ -15,6 +15,7 @@ resource "local_file" "kube_config" {
   count = var.certmanager_provider == "cloudflare" ? 1 : 0
   content  = var.kube_config
   filename = "${path.root}/build/kube_config.yaml"
+  depends_on = [null_resource.dependency_getter]
 }
 
 resource "null_resource" "apply_crds" {
@@ -33,6 +34,7 @@ resource "kubernetes_namespace" "certmanager" {
     }
     name = "cert-manager"
   }
+  depends_on = [null_resource.dependency_getter, local_file.kube_config]
 }
 
 resource "helm_release" "cert_manager" {
@@ -56,6 +58,7 @@ resource "kubernetes_secret" "cloudflare-api-key-secret" {
   data = {
     api-key: var.dns_api_key
   }
+  depends_on = [null_resource.dependency_getter, local_file.kube_config]
 }
 
 resource "local_file" "issuer" {
@@ -66,6 +69,7 @@ resource "local_file" "issuer" {
       dns_domains = var.dns_domains
   })
   filename = "${path.root}/build/issuer.yaml"
+  depends_on = [null_resource.dependency_getter, local_file.kube_config]
 }
 
 resource "null_resource" "issuer_letsencrypt" { 

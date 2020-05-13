@@ -4,6 +4,7 @@ terraform {
   }
 }
 
+// Uncomment this module if you want to use Azure AKS
 module "k8s" {
     source = "./modules/k8s/azure"
     cloud_provider = var.cloud_provider
@@ -35,6 +36,23 @@ module "k8s" {
     enable_kube_dashboard = var.enable_kube_dashboard
     availability_zones = var.availability_zones
 }
+
+// Uncomment this module if you want to use Digital Ocean k8s
+// module "k8s" {
+//     source = "./modules/k8s/digitalocean"
+//     cloud_provider = var.cloud_provider
+//     cluster_name = var.cluster_name
+//     location = var.location
+//     kubernetes_version = var.kubernetes_version
+//     default_node_pool_vm_size = var.default_node_pool_vm_size
+//     default_node_pool_name = var.default_node_pool_name
+//     agent_count = var.agent_count
+//     enable_auto_scaling = var.enable_auto_scaling
+//     autoscale_min_count = var.autoscale_min_count
+//     autoscale_max_count = var.autoscale_max_count
+//     environment = var.environment
+//     operator = var.operator
+// }
 
 module "certmanager-cloudflare" {
     source = "./modules/components/certmanager/cloudflare"
@@ -76,19 +94,18 @@ output "cluster_ca_certificate" {
     value = module.k8s.cluster_ca_certificate
  }
 
-output "cluster_username" {
-    value = module.k8s.cluster_username
-}
-
-output "cluster_password" {
-    value = module.k8s.cluster_password
-}
-
 output "kube_config" {
     value = module.k8s.kube_config
+}
+
+output "token" {
+    value = module.k8s.token
 }
 
 output "host" {
     value = module.k8s.host
 }
 
+output "cloud_provider" {
+    value = var.cloud_provider
+}
