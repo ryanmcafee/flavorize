@@ -1,4 +1,4 @@
-# Provision Kubernetes With Terraform
+# Project Overview
 
 This repo is used for provisioning Kubernetes clusters declaratively using Terraform.  
 Terraform is great for provisioning infrastructure across multiple providers (both on premise and cloud).  
@@ -11,18 +11,23 @@ Kubernetes is complex and vendors often incorporate their own offerings and enco
 In the short term, directly utilizing cloud providers' cli sdks directly to provision kubernetes clusters seems like the way to go.
 I would encourage you to not do that. Using Terraform makes setup and provisioning repeatable and reliable allowing others to reuse your infrastructure blueprint. It can also make cross cloud infrastructure deployments more easily achievable.
 
-Currently, Azure is the only provider that this repo currently handles provisioning for, however you can add support for other providers as well. I designed the implementation to be modular and flexible to support additional cloud providers. I also plan on adding Digital Ocean support shortly. PR requests are welcome and much appreciated! Please see the [contribution guide](https://github.com/ryanmcafee/flavorize/blob/master/Contributing.md) on how to add a provider.
+Flavorize aims to make it easy to setup and provision a fully working Kubernetes cluster in as little time as possible while also provisioning the common things like a load balancer, automatic ssl issuance (from ACME providers like LetsEncrypt) and creation of external dns records for services deployed to the cluster, etc. It's aim is to automate the routine stuff, so you can focus on the fun parts of cloud native development. Who doesn't like moving fast and having fun? Now, let's inject some flavor into Kubernetes!
 
-The terraform configuration for provisioning Kubernetes will vary slightly according to the cloud provider, so please consult your cloud provider's documentation.
+# Quick Start - Provisioning a Kubernetes Cluster
 
-# Provisioning
+To setup/provision a Kubernetes cluster, follow the documentation for the appropriate provider. The following guides make it possible to setup a Kubernetes cluster in under 1 hr. Your mileage will vary based on your 
+knowledge and experience, but I have aimed to make the setup as streamlined as possible to help encourage the adoption and usage of Kubernetes and other cloud native technologies.
 
-To setup/provision a Kubernetes cluster, follow the documentation for the appropriate provider.
+[Azure](https://github.com/ryanmcafee/flavorize/blob/master/docs/providers/Azure.md)        
 
-[Azure](https://github.com/ryanmcafee/flavorize/blob/master/modules/k8s/azure/readme.md)
+[Digital Ocean](https://github.com/ryanmcafee/flavorize/blob/master/docs/providers/DigitalOcean.md)
 
 # Contributing
 
-We welcome feedback and contributions from the open source community! Please see our contribution guide and policies [here](https://github.com/ryanmcafee/flavorize/blob/master/Contributing.md).
+Currently, Azure and Digital Ocean are the only providers that this repo currently handles provisioning for, however you can add support for other providers as well. I designed the implementation to be modular and flexible to support additional cloud providers. There are issues open now to track support for other providers. Feel free to open an issue if you don't see your provider listed here or in an open issue. PR requests are welcome and much appreciated! Please see the [contribution guide](https://github.com/ryanmcafee/flavorize/blob/master/docs/Contributing.md) on how to add a provider.
+
+The terraform configuration for provisioning Kubernetes will vary slightly according to the cloud provider, so please consult your cloud provider's documentation.
+
+We welcome feedback and contributions from the open source community! Please see our contribution guide and policies [here](https://github.com/ryanmcafee/flavorize/blob/master/docs/Contributing.md).
 
 

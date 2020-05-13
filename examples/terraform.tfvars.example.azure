@@ -1,22 +1,9 @@
+# Specific to azure cloud_provider
+cloud_provider="azure"
 arm_subscription_id="yourazuresubscriptionid"
 arm_client_id="yourazureclientid"
 arm_client_secret="yourazureclientsecret"
-kubernetes_version="1.16.7"
-cloud_provider="azure"
-certmanager_provider="cloudflare"
-certmanager_helm_chart_version="0.15.0"
-externaldns_provider="cloudflare"
-externaldns_helm_chart_version="2.22.1"
-ingress_provider="nginx"
-ingress_helm_chart_version="2.1.0"
-agent_count="1"
-autoscale_min_count="1"
-autoscale_max_count="3"
-enable_auto_scaling="true"
-environment="dev"
-dns_prefix="k8s"
-cluster_name="k8s"
-resource_group_name="k8s"
+resource_group_name="azure-k8s"
 network_plugin="azure"
 network_policy="calico"
 service_cidr="172.100.0.0/24"
@@ -24,16 +11,36 @@ dns_service_ip="172.100.0.10"
 docker_bridge_cidr="172.101.0.1/16"
 load_balancer_sku="Standard"
 linux_profile_admin_username="ubuntu"
-default_node_pool_name="agentpool"
-default_node_pool_vm_size="Standard_B4ms"
 enable_kube_dashboard="true"
 operator="DevOps"
 node_disk_size="40"
-#Domain that can be provisioned
-dns_domains="example.com"
-#Cloudflare api key (legacy)
-dns_api_key="yourdnslegacyapikey"
-#Cloudflare api token (specific permissions per domain)
-dns_api_token="yourdnsapitoken"
-#Email to use for acme signing requests with letsencrypt
-dns_api_email="example@example.com"
+environment="Devlab"
+dns_prefix="k8s"
+enable_auto_scaling="true"
+agent_count="1"
+autoscale_min_count="1"
+autoscale_max_count="3"
+default_node_pool_name="agentpool"
+default_node_pool_vm_size="Standard_B4ms"
+cluster_name="k8s"
+kubernetes_version="1.16.7"
+location="East US"
+
+# Set up k8s components
+
+# Valid options are: cloudflare, none
+certmanager_provider="none"
+# Valid options are: cloudflare, none
+externaldns_provider="none"
+# Valid options are: nginx, none
+ingress_provider="nginx"
+# Helm chart versions
+certmanager_helm_chart_version="0.15.0"
+externaldns_helm_chart_version="2.22.1"
+ingress_helm_chart_version="2.1.0"
+# Domains that you wish to issue certs and create external dns records for
+dns_domains=""
+# Your cloudflare legacy api key
+dns_api_key=""
+# Your cloudflare email address
+dns_api_email=""

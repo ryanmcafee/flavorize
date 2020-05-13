@@ -25,6 +25,7 @@ provider "helm" {
   version = "~> 1.1.1"
   kubernetes {
     load_config_file       = false
+    token                  = module.k8s.token
     host                   = module.k8s.host
     client_certificate     = base64decode(module.k8s.client_certificate)
     client_key             = base64decode(module.k8s.client_key)
@@ -35,6 +36,7 @@ provider "helm" {
 provider "kubernetes" {
   version = "~> 1.11"
   load_config_file       = false
+  token                  = module.k8s.token
   host                   = module.k8s.host
   client_certificate     = base64decode(module.k8s.client_certificate)
   client_key             = base64decode(module.k8s.client_key)

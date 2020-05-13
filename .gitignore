@@ -2,5 +2,6 @@
 out.plan
 kubeconfig
 build
+credentials
 .env
 terraform.tfvars

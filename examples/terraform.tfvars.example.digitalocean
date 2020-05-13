@@ -16,9 +16,9 @@ operator="DevOps"
 # Set up k8s components
 
 # Valid options are: cloudflare, none
-certmanager_provider="cloudflare"
+certmanager_provider="none"
 # Valid options are: cloudflare, none
-externaldns_provider="cloudflare"
+externaldns_provider="none"
 # Valid options are: nginx, none
 ingress_provider="nginx"
 # Helm chart versions
