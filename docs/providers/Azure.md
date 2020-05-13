@@ -80,6 +80,8 @@ If you have multiple Azure subscriptions, first query your account with [az acco
 az account list --query "[].{name:name, subscriptionId:id, tenantId:tenantId}"
 ```
 
+After running the above, ensure you set "arm_tenant_id" in terraform.tfvars to the correct azure tenant id you wish to use.
+
 Depending on the Azure account you logged into the Azure CLI with, you may have access to multiple subscriptions. Please ensure that you choose/use the correct Azure Subscription Id.
 
 Set the SUBSCRIPTION_ID environment variable to hold the value of the returned id field from the subscription you want to use:
@@ -92,6 +94,18 @@ Set-Item -Path Env:SUBSCRIPTION_ID -Value 'xxxx-xxxx-xxxx-xxxx'
 Bash:
 ```
 export SUBSCRIPTION_ID='xxxx-xxxx-xxxx-xxxx'
+```
+
+You will also need to set the TENANT_ID environment variable to hold the value of the tenant that you want to use:      
+
+Powershell:
+```
+Set-Item -Path Env:TENANT_ID -Value 'xxxx-xxxx-xxxx-xxxx'
+```
+
+Bash:
+```
+export TENANT_ID='xxxx-xxxx-xxxx-xxxx'
 ```
 
 To use a selected subscription, set the subscription for this session with [az account set](https://docs.microsoft.com/en-us/cli/azure/account#az-account-set)    

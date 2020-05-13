@@ -1,3 +1,8 @@
+variable arm_tenant_id {
+    type = string
+    default = ""
+}
+
 variable arm_subscription_id {
     type = string
     default = ""
