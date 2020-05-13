@@ -18,7 +18,7 @@ As a way to get you quickly up and running, I have created a docker devops-cli i
 
 To use the devops cli container execute the following in either powershell or in a linux shell:  
 
-    docker run -it --rm -v ${pwd}:/workspace ryanmcafee/devops-cli bash
+    docker run -it -v ${pwd}:/workspace ryanmcafee/devops-cli bash
 
 You are now in the workspace directory and should be able to view all files and folders from the project root.
 
@@ -26,7 +26,13 @@ Run the following command:
 
     ls      
 
-You should see all your files and folders. If you do not, ensure you have file and folder sharing enabled in Docker.     
+You should see all your files and folders. If you do not, ensure you have file and folder sharing enabled in Docker.
+
+Next you will want to create an ssh key that will be used to allow you to connect to your kubernetes cluster via ssh.       
+You will need to set an ssh key in the default location of credentials/ssh/id_rsa.pub .
+If you do not have an ssh key already generated, you can generate one with the command:     
+
+    mkdir credentials/ssh -p && ssh-keygen -t rsa -b 2048 -f credentials/ssh/id_rsa -N ""
 
 Now try running..
 
@@ -127,14 +133,30 @@ Run the command:
 
     ./provision.sh
 
-The provision shell script will utilize terraform to provision a Kubernetes cluster along with some kubernetes components if you have them configured in terraform.tfvars. The provision script will also output the kube_config in the untracked credentials folder and sets the KUBECONFIG environment variable to the location of this file. The kubeconfig file will grant you access to kubernetes cluster and allow you to run additional commands by utilizing kubectl. Make sure to keep the kube_config safe at all times!  
+The provision shell script will utilize terraform to provision a Kubernetes cluster along with some kubernetes components if you have them configured in terraform.tfvars. The provision script will also output the kube_config in the untracked credentials folder. The kubeconfig file will grant you access to kubernetes cluster and allow you to run additional commands by utilizing kubectl. Make sure to keep the kube_config safe at all times!
+
+You will need to manually set the environment variable for the kubeconfig variable in order for kubectl to work.
+
+If you are using devops-cli you can do that by running the following command in the container cli:
+
+export KUBECONFIG=credentials/azure/.kube/config        
+
+You will also want to run a similiar command on your host operating system to ensure Vscode Kubernetes extensions know to use the kubeconfig in the credentials folder.
 
 If the provisioning was successful, you should be able to run the following command that will output running pods in the cluster:
 
     kubectl get pods --all-namespaces
+
+Note: There are sometimes transient provisioning issues and you may need to run provision.sh twice for it to complete successfully.    
 
 Note: In order to communicate with the Kubernetes cluster from editors/tools like vscode, you will want to set the KUBECONFIG environment variable to the location of this file on the host system.
 
 Note: If the provisioning does not work and you have gone through the above steps, check that you only have one k8s module uncommented in main.tf that matches Azure.     
 
 If you continue to experience issues please open an issue with details of the issue and we'll help you get it resolved. 
+
+# Destroying/ Tearing Down Cluster
+
+Run the following command:      
+
+    terraform destroy -auto-approve     

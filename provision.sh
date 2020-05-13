@@ -23,6 +23,3 @@ echo "$(terraform output kube_config)" > credentials/${cloud_provider}/.kube/con
 
 # Set the kubeconfig context so we'll be able to talk to the k8s api via kubectl
 export KUBECONFIG=credentials/${cloud_provider}/.kube/config
-
-echo "Successfully provisioned kubernetes cluster!"
-

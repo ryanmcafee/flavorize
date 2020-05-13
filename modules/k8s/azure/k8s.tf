@@ -30,7 +30,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
         admin_username = var.linux_profile_admin_username
 
         ssh_key {
-            key_data = file(var.ssh_public_key)
+            key_data = file(var.ssh_key)
         }
     }
 

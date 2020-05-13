@@ -84,8 +84,8 @@ variable linux_profile_admin_username {
     default = "ubuntu"
 }
 
-variable ssh_public_key {
-    default = "~/.ssh/id_rsa.pub"
+variable ssh_key {
+    default = "credentials/ssh/id_rsa.pub"
 }
 
 variable default_node_pool_name {

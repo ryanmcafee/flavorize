@@ -30,7 +30,7 @@ module "k8s" {
     docker_bridge_cidr = var.docker_bridge_cidr
     load_balancer_sku = var.load_balancer_sku
     linux_profile_admin_username = var.linux_profile_admin_username
-    ssh_public_key = var.ssh_public_key
+    ssh_key = var.ssh_key
     default_node_pool_name = var.default_node_pool_name
     default_node_pool_vm_size = var.default_node_pool_vm_size
     enable_kube_dashboard = var.enable_kube_dashboard
