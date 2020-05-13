@@ -82,7 +82,8 @@ resource "null_resource" "issuer_letsencrypt" {
   depends_on = [
     null_resource.dependency_getter,
     helm_release.cert_manager,
-    local_file.kube_config
+    local_file.kube_config,
+    local_file.issuer
   ]
 }
 
