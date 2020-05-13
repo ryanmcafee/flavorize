@@ -5,3 +5,4 @@ build
 credentials
 .env
 terraform.tfvars
+terraform.tfstate.d
