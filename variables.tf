@@ -143,6 +143,11 @@ variable ingress_provider {
     default = "none"
 }
 
+variable ingress_name {
+    type = string
+    default = "ingress-nginx"
+}
+
 variable ingress_helm_chart_version {
     type = string
     default = "2.1.0"
@@ -181,6 +186,16 @@ variable dns_api_email {
 variable certmanager_provider {
     type = string
     default = "none"
+}
+
+variable certmanager_solver {
+    type = string
+    default = "HTTP01"
+}
+
+variable certmanager_email {
+    type = string
+    default = ""
 }
 
 variable certmanager_helm_chart_version {

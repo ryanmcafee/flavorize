@@ -14,14 +14,14 @@ metadata:
   namespace: cert-manager
 spec:
   acme:
-    email: ${dns_api_email}
+    email: ${certmanager_email}
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-staging
     solvers:
     - dns01:
         cloudflare:
-          email: ${dns_api_email}
+          email: ${certmanager_email}
           apiKeySecretRef:
             name: cloudflare-api-key-secret
             key: api-key
@@ -38,14 +38,14 @@ metadata:
   namespace: cert-manager
 spec:
   acme:
-    email: ${dns_api_email}
+    email: ${certmanager_email}
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-prod
     solvers:
     - dns01:
         cloudflare:
-          email: ${dns_api_email}
+          email: ${certmanager_email}
           apiKeySecretRef:
             name: cloudflare-api-key-secret
             key: api-key

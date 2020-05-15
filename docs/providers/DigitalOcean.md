@@ -116,11 +116,21 @@ operator="DevOps"
 // Valid options are: cloudflare, none      
 certmanager_provider="none"     
 
+// Your email to send ssl cert renewal notifications to     
+certmanager_email=""        
+
+// The certmanager solver to use. See https://cert-manager.io/docs/configuration/acme/      
+// Valid Options: "HTTP01", "DNS01"     
+certmanager_solver="HTTP01"        
+
 // Valid options are: cloudflare, none      
 externaldns_provider="none"     
 
 // Valid options are: nginx, none       
-ingress_provider="nginx"        
+ingress_provider="nginx"   
+
+// Name of your ingress controller      
+ingress_name="ingress-nginx"        
 
 // Helm chart versions      
 certmanager_helm_chart_version="0.15.0"     

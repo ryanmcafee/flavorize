@@ -18,6 +18,11 @@ variable dns_api_email {
     default = "none"
 }
 
+variable certmanager_email {
+    type = string
+    default = ""
+}
+
 variable dns_domains {
     type = string
     default = "none"

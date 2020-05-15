@@ -3,6 +3,11 @@ variable ingress_provider {
     default = "none"
 }
 
+variable ingress_name {
+    type = string
+    default = "ingress-nginx"
+}
+
 variable ingress_helm_chart_version {
     type = string
     default = "2.1.0"
