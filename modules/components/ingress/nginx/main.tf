@@ -24,7 +24,7 @@ resource "kubernetes_namespace" "ingress" {
 
 resource "helm_release" "ingress-nginx" {
   count = var.ingress_provider == "nginx" ? 1 : 0
-  name       = "ingress-nginx"
+  name       = var.ingress_name
   chart      = "ingress-nginx"
   version    = var.ingress_helm_chart_version
   repository = data.helm_repository.ingress-nginx[0].metadata[0].name

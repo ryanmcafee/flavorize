@@ -3,6 +3,21 @@ variable certmanager_provider {
     default = "none"
 }
 
+variable certmanager_solver {
+    type = string
+    default = "HTTP01"
+}
+
+variable certmanager_email {
+    type = string
+    default = ""
+}
+
+variable ingress_name {
+    type = string
+    default = "ingress-nginx"
+}
+
 variable certmanager_helm_chart_version {
     type = string
     default = "0.15.0"

@@ -17,6 +17,8 @@ operator="DevOps"
 
 # Valid options are: cloudflare, none
 certmanager_provider="none"
+# Email to send renewal ssl notices to
+certmanager_email=""
 # Valid options are: cloudflare, none
 externaldns_provider="none"
 # Valid options are: nginx, none
