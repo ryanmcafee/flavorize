@@ -202,3 +202,18 @@ variable certmanager_helm_chart_version {
     default = "0.15.0"
 }
 
+variable rook_enabled {
+    type = string
+    default = "false"
+}
+
+variable rook_helm_chart_version {
+    type = string
+    default = "v1.3.3"
+}
+
+variable rbac_enabled {
+    type = string
+    default = "true"
+}
+

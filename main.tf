@@ -54,6 +54,14 @@ module "k8s" {
 //     operator = var.operator
 // }
 
+module "rook" {
+    source = "./modules/components/rook"
+    rook_enabled = var.rook_enabled
+    rbac_enabled = var.rbac_enabled
+    rook_helm_chart_version = var.rook_helm_chart_version
+    dependencies = [module.k8s.id]
+}
+
 module "certmanager-cloudflare" {
     source = "./modules/components/certmanager/cloudflare"
     certmanager_provider = var.certmanager_provider
