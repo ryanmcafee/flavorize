@@ -134,7 +134,14 @@ dns_domains=""
 dns_api_key=""      
 
 // Your cloudflare account email address        
-dns_api_email=""        
+dns_api_email=""       
+
+// Controls the installing of the rook operator via helm    
+rook_enabled="false"    
+rook_helm_chart_version="v1.3.3"    
+
+// Role Base Access Permission   
+rbac_enabled="true"     
 
 ### Provisioning
 
