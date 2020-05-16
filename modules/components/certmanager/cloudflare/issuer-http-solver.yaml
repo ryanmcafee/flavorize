@@ -12,7 +12,7 @@ spec:
     solvers:
     - http01:
        ingress:
-         name: ${ingress_name}
+         class: ${ingress_class}
 ---
 apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
@@ -28,5 +28,5 @@ spec:
     solvers:
     - http01:
        ingress:
-         name: ${ingress_name}
+         class: ${ingress_class}
       selector: {}                      

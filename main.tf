@@ -68,7 +68,7 @@ module "certmanager-cloudflare" {
     certmanager_helm_chart_version = var.certmanager_helm_chart_version
     certmanager_email = var.certmanager_email
     certmanager_solver = var.certmanager_solver
-    ingress_name = var.ingress_name
+    ingress_class = var.ingress_provider
     dns_domains = var.dns_domains
     dns_api_key = var.dns_api_key
     dependencies = [module.k8s.id]

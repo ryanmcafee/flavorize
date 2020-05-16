@@ -66,7 +66,7 @@ resource "local_file" "issuer_http_solver" {
   content  = templatefile("${path.module}/issuer-http-solver.yaml", {
       certmanager_email = var.certmanager_email,
       certmanager_solver = var.certmanager_solver,
-      ingress_name = var.ingress_name
+      ingress_class = var.ingress_class
   })
   filename = "${path.root}/build/issuer-http-solver.yaml"
   depends_on = [null_resource.dependency_getter, local_file.kube_config]

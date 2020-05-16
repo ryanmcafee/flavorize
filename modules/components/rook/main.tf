@@ -38,4 +38,9 @@ resource "helm_release" "rook-ceph" {
       value = var.rbac_enabled
   }
 
+  set {
+    name = "csi.enableGrpcMetrics"
+    value = false
+  }
+
 }

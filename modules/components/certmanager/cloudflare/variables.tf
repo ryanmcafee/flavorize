@@ -13,9 +13,9 @@ variable certmanager_email {
     default = ""
 }
 
-variable ingress_name {
+variable ingress_class {
     type = string
-    default = "ingress-nginx"
+    default = "nginx"
 }
 
 variable certmanager_helm_chart_version {
