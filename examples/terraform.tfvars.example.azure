@@ -52,3 +52,14 @@ rook_enabled="false"
 rook_helm_chart_version="v1.3.3"
 # Role Base Access Permission
 rbac_enabled="true"
+
+# Controls enabling/disabling of nfs via helm chart
+nfs_server_enabled="false"
+nfs_chart_version="1.0.0"
+nfs_storage_class=""
+nfs_persistence_enabled="enabled"
+nfs_disk_size="50Gi"
+
+# Controls enabling/disabling of prometheus via helm chart
+prometheus_enabled="false"
+prometheus_chart_version="11.2.3"
