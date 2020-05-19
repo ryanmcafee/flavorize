@@ -42,10 +42,8 @@ externaldns_helm_chart_version="2.22.1"
 ingress_helm_chart_version="2.1.0"
 # Domains that you wish to issue certs and create external dns records for
 dns_domains=""
-# Your cloudflare legacy api key
-dns_api_key=""
-# Your cloudflare email address
-dns_api_email=""
+# When using API Token authentication the cloudflare token should be granted Zone Read and DNS Edit privileges.
+dns_api_token=""
 
 # Controls the installing of the rook operator via helm
 rook_enabled="false"
