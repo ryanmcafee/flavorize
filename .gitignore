@@ -7,3 +7,4 @@ credentials
 terraform.tfvars
 terraform.tfstate.d
 backend.hcl
+customizations

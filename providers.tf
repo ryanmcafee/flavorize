@@ -26,7 +26,7 @@ provider "null" {
 }
 
 provider "helm" {
-  version = "~> 1.1.1"
+  version = "~> 1.2.1"
   kubernetes {
     load_config_file       = false
     token                  = module.k8s.token

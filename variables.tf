@@ -217,3 +217,38 @@ variable rbac_enabled {
     default = "true"
 }
 
+variable nfs_server_enabled {
+    type = string
+    default = "false"
+}
+
+variable nfs_chart_version {
+    type = string
+    default = "1.0.0"
+}
+
+variable nfs_storage_class {
+    type = string
+    default = ""
+}
+
+variable nfs_persistence_enabled {
+    type = string
+    default = "true"
+}
+
+variable nfs_disk_size {
+    type = string
+    default = "50Gi"
+}
+
+variable prometheus_enabled {
+    type = string
+    default = "false"
+}
+
+variable prometheus_chart_version {
+  type = string
+  default = "11.2.3"
+}
+

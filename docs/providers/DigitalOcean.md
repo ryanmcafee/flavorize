@@ -153,6 +153,23 @@ rook_helm_chart_version="v1.3.3"
 // Role Base Access Permission   
 rbac_enabled="true"     
 
+// Controls provisioning of a nfs-server with a persistent volume   
+nfs_server_enabled="true"       
+
+nfs_chart_version="1.0.0"       
+
+nfs_storage_class="do-block-storage"        
+
+nfs_persistence_enabled="true"      
+
+nfs_disk_size="50Gi"       
+
+// Controls provisioning of prometheus via helm     
+prometheus_enabled="false"      
+
+// Version of Prometheus Helm Chart to use      
+prometheus_chart_version="11.2.3"       
+
 ### Provisioning
 
 Confirm that you have set the variables correctly in terraform.tfvars before running the following command to setup the cluster.

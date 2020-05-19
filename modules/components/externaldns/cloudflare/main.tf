@@ -1,9 +1,3 @@
-data "helm_repository" "externaldns" {
-  count = var.externaldns_provider == "cloudflare" ? 1 : 0
-  name = "stable"
-  url  = "https://charts.bitnami.com/bitnami"
-}
-
 resource "null_resource" "dependency_getter" {
   count = var.externaldns_provider == "cloudflare" ? 1 : 0
   triggers = {
@@ -11,26 +5,17 @@ resource "null_resource" "dependency_getter" {
   }
 }
 
-resource "kubernetes_namespace" "external-dns" {
-  count = var.externaldns_provider == "cloudflare" ? 1 : 0
-  depends_on = [null_resource.dependency_getter]
-  metadata {
-    annotations = {
-      name = "external-dns"
-    }
-    name = "external-dns"
-  }
-}
-
 resource "helm_release" "external-dns" {
   count = var.externaldns_provider == "cloudflare" ? 1 : 0
-  depends_on = [kubernetes_namespace.external-dns]
+  depends_on = [null_resource.dependency_getter]
   name       = "external-dns"
-  repository = data.helm_repository.externaldns[0].metadata[0].name
+  repository = "https://charts.bitnami.com/bitnami"
   chart      = "external-dns"
   version    = var.externaldns_helm_chart_version
   namespace = "external-dns"
-
+  create_namespace = true
+  force_update = true
+  
   values = []
 
   set {

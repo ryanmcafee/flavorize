@@ -54,6 +54,23 @@ module "k8s" {
 //     operator = var.operator
 // }
 
+module "prometheus" {
+    source = "./modules/components/prometheus"
+    prometheus_enabled = var.prometheus_enabled
+    prometheus_chart_version = var.prometheus_chart_version
+    dependencies = [module.k8s.id]
+}
+
+module "nfs" {
+    source = "./modules/components/nfs"
+    nfs_server_enabled = var.nfs_server_enabled
+    nfs_chart_version = var.nfs_chart_version
+    nfs_storage_class = var.nfs_storage_class
+    nfs_persistence_enabled = var.nfs_persistence_enabled
+    nfs_disk_size = var.nfs_disk_size
+    dependencies = [module.k8s.id]
+}
+
 module "rook" {
     source = "./modules/components/rook"
     rook_enabled = var.rook_enabled

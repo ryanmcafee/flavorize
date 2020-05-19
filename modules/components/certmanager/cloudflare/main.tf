@@ -1,9 +1,3 @@
-data "helm_repository" "certmanager" {
-  count = var.certmanager_provider != "none" ? 1 : 0
-  name = "jetstack"
-  url  = "https://charts.jetstack.io"
-}
-
 resource "null_resource" "dependency_getter" {
   count = var.certmanager_provider == "cloudflare" ? 1 : 0
   triggers = {
@@ -18,35 +12,26 @@ resource "local_file" "kube_config" {
   depends_on = [null_resource.dependency_getter]
 }
 
-resource "null_resource" "apply_crds" {
-  count = var.certmanager_provider == "cloudflare" ? 1 : 0
-  provisioner "local-exec" {
-    command = "kubectl apply --kubeconfig ${local_file.kube_config[0].filename} --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v${var.certmanager_helm_chart_version}/cert-manager.crds.yaml"
-  }
-  depends_on = [null_resource.dependency_getter, local_file.kube_config]
-}
-
-resource "kubernetes_namespace" "certmanager" {
-  count = var.certmanager_provider == "cloudflare" ? 1 : 0
-  metadata {
-    annotations = {
-      name = "cert-manager"
-    }
-    name = "cert-manager"
-  }
-  depends_on = [null_resource.dependency_getter, local_file.kube_config]
-}
-
 resource "helm_release" "cert_manager" {
   count = var.certmanager_provider == "cloudflare" ? 1 : 0
-  depends_on = [null_resource.dependency_getter, kubernetes_namespace.certmanager, null_resource.apply_crds]
+  depends_on = [null_resource.dependency_getter]
   name       = "cert-manager"
-  repository = data.helm_repository.certmanager[0].metadata[0].name
+  repository = "https://charts.jetstack.io/"
   chart      = "cert-manager"
   version    = "v${var.certmanager_helm_chart_version}"
   namespace  = "cert-manager"
+  create_namespace = true
+  force_update = true
+  dependency_update = true
+  skip_crds = false
+  disable_crd_hooks = false
 
   values = []
+
+  set {
+    name = "installCRDS"
+    value = "true"
+  }
 }
 
 resource "kubernetes_secret" "cloudflare-api-key-secret" {
@@ -58,7 +43,7 @@ resource "kubernetes_secret" "cloudflare-api-key-secret" {
   data = {
     api-key: var.dns_api_key
   }
-  depends_on = [null_resource.dependency_getter, local_file.kube_config]
+  depends_on = [null_resource.dependency_getter, local_file.kube_config, helm_release.cert_manager]
 }
 
 resource "local_file" "issuer_http_solver" {
@@ -69,7 +54,7 @@ resource "local_file" "issuer_http_solver" {
       ingress_class = var.ingress_class
   })
   filename = "${path.root}/build/issuer-http-solver.yaml"
-  depends_on = [null_resource.dependency_getter, local_file.kube_config]
+  depends_on = [null_resource.dependency_getter, local_file.kube_config, helm_release.cert_manager]
 }
 
 resource "null_resource" "issuer_http_solver_apply" { 
@@ -95,7 +80,7 @@ resource "local_file" "issuer_dns_solver" {
       dns_domains = var.dns_domains
   })
   filename = "${path.root}/build/issuer-dns-solver.yaml"
-  depends_on = [null_resource.dependency_getter, local_file.kube_config]
+  depends_on = [null_resource.dependency_getter, local_file.kube_config, helm_release.cert_manager]
 }
 
 resource "null_resource" "issuer_dns_solver_apply" { 
