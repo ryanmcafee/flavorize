@@ -38,15 +38,15 @@ variable agent_count {
 }
 
 variable autoscale_min_count {
-    default = 1
+    default = null
 }
 
 variable autoscale_max_count {
-    default = 3
+    default = null
 }
 
 variable enable_auto_scaling {
-    default = true
+    default = false
 }
 
 variable dns_prefix {
@@ -163,22 +163,12 @@ variable externaldns_helm_chart_version {
     default = "2.22.1"
 }
 
-variable dns_domains {
+variable externaldns_domains {
     type = string
     default = ""
 }
 
-variable dns_api_token {
-    type = string
-    default = ""
-}
-
-variable dns_api_key {
-    type = string
-    default = ""
-}
-
-variable dns_api_email {
+variable externaldns_api_token {
     type = string
     default = ""
 }

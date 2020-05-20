@@ -15,30 +15,42 @@ operator="DevOps"
 
 # Set up k8s components
 
+# Handles auto issuance of ssl certificates. See: https://cert-manager.io/
+# Note for publicly exposed services set certmanager_solver type to either "HTTP01" or "DNS01"
+# Note: For internal only dns records you will need to use certmanager_solver type of "DNS01"
 # Valid options are: cloudflare, none
 certmanager_provider="none"
 # Email to send renewal ssl notices to
 certmanager_email=""
-# Valid options are: cloudflare, none
-externaldns_provider="none"
+certmanager_helm_chart_version="0.15.0"
+# Valid options are: "HTTP01", "DNS01"
+certmanager_solver="HTTP01"
+
+# See: https://kubernetes.github.io/ingress-nginx/
 # Valid options are: nginx, none
 ingress_provider="nginx"
-# Helm chart versions
-certmanager_helm_chart_version="0.15.0"
-externaldns_helm_chart_version="2.22.1"
 ingress_helm_chart_version="2.1.0"
+
+# Adds External Dns Controller Support that will handle updating of ingress and service records that are annotated
+# See https://github.com/kubernetes-sigs/external-dns
+# Valid options are: cloudflare, none
+externaldns_provider="none"
+externaldns_helm_chart_version="2.22.1"
 # Domains that you wish to issue certs and create external dns records for
-dns_domains=""
+externaldns_domains=""
 # When using API Token authentication the cloudflare token should be granted Zone Read and DNS Edit privileges.
-dns_api_token=""
+externaldns_api_token=""
 
 # Controls the installing of the rook operator via helm
+# Rook allows you to utilize ceph and cephfs to create high availability redundant storage.
+# See: https://rook.io/docs/rook/v1.3/helm-operator.html
 rook_enabled="false"
 rook_helm_chart_version="v1.3.3"
 # Role Base Access Permission
 rbac_enabled="true"
 
 # Controls enabling/disabling of nfs via helm chart
+# See: https://github.com/helm/charts/tree/master/stable/nfs-server-provisioner
 nfs_server_enabled="false"
 nfs_chart_version="1.0.0"
 nfs_storage_class=""
@@ -46,5 +58,6 @@ nfs_persistence_enabled="enabled"
 nfs_disk_size="50Gi"
 
 # Controls enabling/disabling of prometheus via helm chart
+# See: https://hub.helm.sh/charts/stable/prometheus
 prometheus_enabled="false"
 prometheus_chart_version="11.2.3"

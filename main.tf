@@ -86,8 +86,8 @@ module "certmanager-cloudflare" {
     certmanager_email = var.certmanager_email
     certmanager_solver = var.certmanager_solver
     ingress_class = var.ingress_provider
-    dns_domains = var.dns_domains
-    dns_api_key = var.dns_api_key
+    externaldns_domains = var.externaldns_domains
+    externaldns_api_token = var.externaldns_api_token
     dependencies = [module.k8s.id]
     kube_config = module.k8s.kube_config
 }
@@ -96,9 +96,8 @@ module "externaldns-cloudflare" {
     source = "./modules/components/externaldns/cloudflare"
     externaldns_provider = var.externaldns_provider
     externaldns_helm_chart_version = var.externaldns_helm_chart_version
-    dns_domains = var.dns_domains
-    dns_api_key = var.dns_api_key
-    dns_api_email = var.dns_api_email
+    externaldns_domains = var.externaldns_domains
+    externaldns_api_token = var.externaldns_api_token
     dependencies = [module.k8s.id]
 }
 

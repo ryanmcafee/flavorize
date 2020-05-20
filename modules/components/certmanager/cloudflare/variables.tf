@@ -23,17 +23,12 @@ variable certmanager_helm_chart_version {
     default = "0.15.0"
 }
 
-variable dns_api_key {
+variable externaldns_api_token {
     type = string
     default = "none"
 }
 
-variable dns_api_email {
-    type = string
-    default = "none"
-}
-
-variable dns_domains {
+variable externaldns_domains {
     type = string
     default = "none"
 }

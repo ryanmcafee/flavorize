@@ -8,22 +8,12 @@ variable externaldns_helm_chart_version {
     default = "2.22.1"
 }
 
-variable dns_api_key {
+variable externaldns_api_token {
     type = string
     default = "none"
 }
 
-variable dns_api_email {
-    type = string
-    default = "none"
-}
-
-variable certmanager_email {
-    type = string
-    default = ""
-}
-
-variable dns_domains {
+variable externaldns_domains {
     type = string
     default = "none"
 }

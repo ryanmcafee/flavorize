@@ -289,7 +289,7 @@ alertmanager:
   service:
     annotations: {}
     labels: {}
-    clusterIP: ""
+    # clusterIP: ""
 
     ## Enabling peer mesh service end points for enabling the HA alert manager
     ## Ref: https://github.com/prometheus/alertmanager/blob/master/README.md
@@ -298,10 +298,10 @@ alertmanager:
     ## List of IP addresses at which the alertmanager service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
     ##
-    externalIPs: []
+    # externalIPs: []
 
-    loadBalancerIP: ""
-    loadBalancerSourceRanges: []
+    # loadBalancerIP: ""
+    # loadBalancerSourceRanges: []
     servicePort: 80
     # nodePort: 30000
     sessionAffinity: None
@@ -526,11 +526,11 @@ nodeExporter:
     ## List of IP addresses at which the node-exporter service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
     ##
-    externalIPs: []
+    # externalIPs: []
 
     hostPort: 9100
-    loadBalancerIP: ""
-    loadBalancerSourceRanges: []
+    # loadBalancerIP: ""
+    # loadBalancerSourceRanges: []
     servicePort: 9100
     type: ClusterIP
 
@@ -826,7 +826,7 @@ server:
     ## If true, use a statefulset instead of a deployment for pod management.
     ## This allows to scale replicas to more than 1 pod
     ##
-    enabled: false
+    enabled: true
 
     annotations: {}
     labels: {}
@@ -882,15 +882,15 @@ server:
   service:
     annotations: {}
     labels: {}
-    clusterIP: ""
+    # clusterIP: ""
 
     ## List of IP addresses at which the Prometheus server service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
     ##
-    externalIPs: []
+    # externalIPs: []
 
-    loadBalancerIP: ""
-    loadBalancerSourceRanges: []
+    # loadBalancerIP: ""
+    # loadBalancerSourceRanges: []
     servicePort: 80
     sessionAffinity: None
     type: ClusterIP
@@ -905,7 +905,7 @@ server:
     ## service to connect to a specific replica to have a consistent view
     ## of the data.
     statefulsetReplica:
-      enabled: false
+      enabled: true
       replica: 0
 
   ## Prometheus server pod termination grace period
@@ -1045,15 +1045,15 @@ pushgateway:
     annotations:
       prometheus.io/probe: pushgateway
     labels: {}
-    clusterIP: ""
+    # clusterIP: ""
 
     ## List of IP addresses at which the pushgateway service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
     ##
-    externalIPs: []
+    # externalIPs: []
 
-    loadBalancerIP: ""
-    loadBalancerSourceRanges: []
+    # loadBalancerIP: ""
+    # loadBalancerSourceRanges: []
     servicePort: 9091
     type: ClusterIP
 

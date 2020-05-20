@@ -20,17 +20,32 @@ resource "helm_release" "ingress-nginx" {
 
   set {
       name = "replicas"
-      value = "1"
+      value = "3"
   }
 
   set {
       name = "controller.autoscaling.enabled"
-      value = true
+      value = false
+  }
+
+  set {
+    name = "controller.useComponentLabel"
+    value = true
+  }
+
+  set {
+    name = "controller.metrics.serviceMonitor.enabled"
+    value = true
   }
 
   set {
       name = "metrics.enabled"
       value = true
+  }
+
+  set {
+    name = "controller.metrics.prometheusRule.enabled"
+    value = true
   }
 
 }

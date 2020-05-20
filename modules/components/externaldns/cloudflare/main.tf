@@ -25,22 +25,17 @@ resource "helm_release" "external-dns" {
 
   set {
       name = "domainsFilter"
-      value = var.dns_domains
+      value = var.externaldns_domains
   }
 
   set {
       name = "domainsFilter"
-      value = var.dns_domains
+      value = var.externaldns_domains
   }
 
   set {
-    name  = "cloudflare.apiKey"
-    value = var.dns_api_key
-  }
-
-  set {
-    name  = "cloudflare.email"
-    value = var.dns_api_email
+    name  = "cloudflare.apiToken"
+    value = var.externaldns_api_token
   }
 
   set {
@@ -70,7 +65,7 @@ resource "helm_release" "external-dns" {
 
   set {
       name = "metrics.enabled"
-      value = false
+      value = true
   }
 
 }

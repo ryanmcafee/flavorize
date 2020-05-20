@@ -12,26 +12,50 @@ resource "local_file" "kube_config" {
   depends_on = [null_resource.dependency_getter]
 }
 
+resource "kubernetes_namespace" "certmanager" {
+  count = var.certmanager_provider == "cloudflare" ? 1 : 0
+  metadata {
+    annotations = {
+      name = "cert-manager"
+    }
+    name = "cert-manager"
+  }
+  depends_on = [null_resource.dependency_getter, local_file.kube_config]
+}
+
 resource "helm_release" "cert_manager" {
   count = var.certmanager_provider == "cloudflare" ? 1 : 0
-  depends_on = [null_resource.dependency_getter]
+  depends_on = [null_resource.dependency_getter, kubernetes_namespace.certmanager]
   name       = "cert-manager"
   repository = "https://charts.jetstack.io/"
   chart      = "cert-manager"
   version    = "v${var.certmanager_helm_chart_version}"
   namespace  = "cert-manager"
-  create_namespace = true
   force_update = true
   dependency_update = true
-  skip_crds = false
-  disable_crd_hooks = false
 
   values = []
 
   set {
-    name = "installCRDS"
-    value = "true"
+    name = "installCRDs"
+    value = true
   }
+
+  set {
+    name = "ingressShim.defaultIssuerName"
+    value = "letsencrypt-prod"
+  }
+
+  set {
+    name = "ingressShim.defaultIssuerKind"
+    value = "ClusterIssuer"
+  }
+
+  set {
+    name = "ingressShim.defaultIssuerGroup"
+    value = "cert-manager.io"
+  }
+
 }
 
 resource "kubernetes_secret" "cloudflare-api-key-secret" {
@@ -41,7 +65,7 @@ resource "kubernetes_secret" "cloudflare-api-key-secret" {
     namespace = "cert-manager"
   }
   data = {
-    api-key: var.dns_api_key
+    api-token: var.externaldns_api_token
   }
   depends_on = [null_resource.dependency_getter, local_file.kube_config, helm_release.cert_manager]
 }
@@ -75,9 +99,9 @@ resource "null_resource" "issuer_http_solver_apply" {
 resource "local_file" "issuer_dns_solver" {
   count = var.certmanager_provider == "cloudflare" && var.certmanager_solver == "DNS01" ? 1 : 0
   content  = templatefile("${path.module}/issuer-dns-solver.yaml", {
-      dns_api_key = var.dns_api_key,
+      externaldns_api_token = var.externaldns_api_token,
       certmanager_email = var.certmanager_email,
-      dns_domains = var.dns_domains
+      externaldns_domains = var.externaldns_domains
   })
   filename = "${path.root}/build/issuer-dns-solver.yaml"
   depends_on = [null_resource.dependency_getter, local_file.kube_config, helm_release.cert_manager]

@@ -113,39 +113,31 @@ environment="dev"
 // Set to who will be the operator (Ie..Department, Role, Individual)       
 operator="DevOps"
 
+// Below are valid options you can specify to configure helm charts that will be installed.
+        
 // Valid options are: cloudflare, none      
-certmanager_provider="none"     
-
+certmanager_provider="none"    
+certmanager_helm_chart_version="0.15.0"  
 // Your email to send ssl cert renewal notifications to     
-certmanager_email=""        
+certmanager_email=""
 
 // The certmanager solver to use. See https://cert-manager.io/docs/configuration/acme/      
 // Valid Options: "HTTP01", "DNS01"     
-certmanager_solver="HTTP01"        
-
-// Valid options are: cloudflare, none      
-externaldns_provider="none"     
-
-// Valid options are: nginx, none       
-ingress_provider="nginx"   
-
-// Name of your ingress controller      
+certmanager_solver="HTTP01"          
+   
+// Ingress controller configuration      
+ingress_provider="nginx"     
 ingress_name="ingress-nginx"        
-
-// Helm chart versions      
-certmanager_helm_chart_version="0.15.0"     
-externaldns_helm_chart_version="2.22.1"     
 ingress_helm_chart_version="2.1.0"      
 
+// Valid options are: cloudflare, none      
+externaldns_provider="none"   
+externaldns_helm_chart_version="2.22.1"     
 // Domains that you wish to issue certs and create external dns records for     
-dns_domains=""      
-
-// Your cloudflare legacy api key       
-dns_api_key=""      
-
-// Your cloudflare account email address        
-dns_api_email=""       
-
+external_dns_domains=""      
+// Your cloudflare api token      
+externaldns_api_token=""      
+     
 // Controls the installing of the rook operator via helm    
 rook_enabled="false"    
 rook_helm_chart_version="v1.3.3"    
@@ -155,18 +147,13 @@ rbac_enabled="true"
 
 // Controls provisioning of a nfs-server with a persistent volume   
 nfs_server_enabled="true"       
-
 nfs_chart_version="1.0.0"       
-
 nfs_storage_class="do-block-storage"        
-
 nfs_persistence_enabled="true"      
-
 nfs_disk_size="50Gi"       
 
 // Controls provisioning of prometheus via helm     
 prometheus_enabled="false"      
-
 // Version of Prometheus Helm Chart to use      
 prometheus_chart_version="11.2.3"       
 

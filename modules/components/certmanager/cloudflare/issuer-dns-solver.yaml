@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: cloudflare-api-key-secret
+  name: cloudflare-api-token-secret
   namespace: cert-manager
 type: Opaque
 stringData:
-  api-key: ${dns_api_key}
+  api-token: ${externaldns_api_token}
 ---
 apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
@@ -22,14 +22,14 @@ spec:
     - dns01:
         cloudflare:
           email: ${certmanager_email}
-          apiKeySecretRef:
-            name: cloudflare-api-key-secret
-            key: api-key
+          apiTokenSecretRef:
+            name: cloudflare-api-token-secret
+            key: api-token
       selector:
         dnsNames:
-        - ${dns_domains}
+        - ${externaldns_domains}
         dnsZones:
-        - ${dns_domains}
+        - ${externaldns_domains}
 ---
 apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
@@ -46,7 +46,7 @@ spec:
     - dns01:
         cloudflare:
           email: ${certmanager_email}
-          apiKeySecretRef:
-            name: cloudflare-api-key-secret
-            key: api-key
+          apiTokenSecretRef:
+            name: cloudflare-api-token-secret
+            key: api-token
       selector: {}                      
