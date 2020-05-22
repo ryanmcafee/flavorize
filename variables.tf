@@ -138,9 +138,29 @@ variable availability_zones {
     default = ["1", "2", "3"]
 }
 
+# Ingress Settings
 variable ingress_provider {
     type = string
     default = "none"
+}
+
+variable ingress_helm_chart_version {
+    type = string
+    default = "2.3.0"
+}
+
+variable "ingress_enable_proxy_protocol" {
+    type = string
+    default = "true"
+}
+
+variable "ingress_enable_backend_keepalive" {
+    type = string
+    default = "false"
+}
+
+variable cluster_dns_domain {
+    default = ""
 }
 
 variable ingress_name {
@@ -148,11 +168,41 @@ variable ingress_name {
     default = "ingress-nginx"
 }
 
-variable ingress_helm_chart_version {
-    type = string
-    default = "2.1.0"
+variable ingress_service_annotations {
+    default = {}
 }
 
+variable ingress_autoscaling_enabled {
+    type = string
+    default = "false"
+}
+
+variable ingress_controller_use_component_labels {
+    type = string
+    default = "true"
+}
+
+variable "ingress_metrics_enabled" {
+    type = string
+    default = "true"
+}
+
+variable "ingress_controller_metrics_service_monitor_enabled" {
+    type = string
+    default = "true"
+}
+
+variable "ingress_controller_metrics_prometheusRule_enabled" {
+    type = string
+    default = "true"
+}
+
+variable "ingress_num_replicas" {
+    type = string
+    default = "1"
+}
+
+# External DNS Settings
 variable externaldns_provider {
     type = string
     default = "none"
@@ -173,6 +223,7 @@ variable externaldns_api_token {
     default = ""
 }
 
+# Cert Manager Settings
 variable certmanager_provider {
     type = string
     default = "none"
@@ -185,13 +236,14 @@ variable certmanager_solver {
 
 variable certmanager_email {
     type = string
-    default = ""
+    default = "example@example.com"
 }
 
 variable certmanager_helm_chart_version {
     default = "0.15.0"
 }
 
+# Rook Settings
 variable rook_enabled {
     type = string
     default = "false"
@@ -207,6 +259,7 @@ variable rbac_enabled {
     default = "true"
 }
 
+# NFS Settings
 variable nfs_server_enabled {
     type = string
     default = "false"
@@ -232,6 +285,7 @@ variable nfs_disk_size {
     default = "50Gi"
 }
 
+# Prometheus related settings
 variable prometheus_enabled {
     type = string
     default = "false"
@@ -239,6 +293,6 @@ variable prometheus_enabled {
 
 variable prometheus_chart_version {
   type = string
-  default = "11.2.3"
+  default = "8.13.8"
 }
 

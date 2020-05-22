@@ -20,32 +20,56 @@ resource "helm_release" "ingress-nginx" {
 
   set {
       name = "replicas"
-      value = "3"
+      value = var.ingress_num_replicas
   }
 
   set {
       name = "controller.autoscaling.enabled"
-      value = false
+      value = var.ingress_autoscaling_enabled
   }
 
   set {
     name = "controller.useComponentLabel"
-    value = true
+    value = var.ingress_controller_use_component_labels
   }
 
   set {
     name = "controller.metrics.serviceMonitor.enabled"
-    value = true
+    value = var.ingress_controller_metrics_service_monitor_enabled
   }
 
   set {
       name = "metrics.enabled"
-      value = true
+      value = var.ingress_metrics_enabled
   }
 
   set {
     name = "controller.metrics.prometheusRule.enabled"
-    value = true
+    value = var.ingress_controller_metrics_prometheusRule_enabled
   }
+
+  set {
+    name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/${var.cloud_provider}-loadbalancer-hostname"
+    value = var.cluster_dns_domain
+  }
+
+  set {
+    name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/${var.cloud_provider}-loadbalancer-name"
+    value = "${var.cluster_name}-loadbalancer"
+  }
+
+  # Disabled for now due to a terraform helm provider bug
+  # See: https://github.com/terraform-providers/terraform-provider-helm/issues/475
+  # set {
+  #   name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/${var.cloud_provider}-loadbalancer-enable-proxy-protocol"
+  #   value = var.ingress_enable_proxy_protocol
+  # }
+
+  # Disabled for now due to a terraform helm provider bug
+  # See: https://github.com/terraform-providers/terraform-provider-helm/issues/475
+  # set {
+  #   name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/${var.cloud_provider}-loadbalancer-enable-backend-keepalive"
+  #   value = var.ingress_enable_backend_keepalive
+  # }
 
 }

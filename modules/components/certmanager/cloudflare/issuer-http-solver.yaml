@@ -13,7 +13,6 @@ spec:
     - http01:
        ingress:
          class: ${ingress_class}
-      selector: {}   
 ---
 apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
@@ -30,4 +29,3 @@ spec:
     - http01:
        ingress:
          class: ${ingress_class}
-      selector: {}                      

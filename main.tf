@@ -4,7 +4,8 @@ terraform {
   }
 }
 
-// Uncomment this module if you want to use Azure AKS
+## Start Of Azure (AKS) Kubernetes Configuration
+## Comment this section if you are not provisioning Kubernetes (AKS) with Azure
 module "k8s" {
     source = "./modules/k8s/azure"
     cloud_provider = var.cloud_provider
@@ -36,103 +37,23 @@ module "k8s" {
     enable_kube_dashboard = var.enable_kube_dashboard
     availability_zones = var.availability_zones
 }
+## End Of Azure (AKS) Kubernetes Configuration
 
-// Uncomment this module if you want to use Digital Ocean k8s
-// module "k8s" {
-//     source = "./modules/k8s/digitalocean"
-//     cloud_provider = var.cloud_provider
-//     cluster_name = var.cluster_name
-//     location = var.location
-//     kubernetes_version = var.kubernetes_version
-//     default_node_pool_vm_size = var.default_node_pool_vm_size
-//     default_node_pool_name = var.default_node_pool_name
-//     agent_count = var.agent_count
-//     enable_auto_scaling = var.enable_auto_scaling
-//     autoscale_min_count = var.autoscale_min_count
-//     autoscale_max_count = var.autoscale_max_count
-//     environment = var.environment
-//     operator = var.operator
-// }
-
-module "prometheus" {
-    source = "./modules/components/prometheus"
-    prometheus_enabled = var.prometheus_enabled
-    prometheus_chart_version = var.prometheus_chart_version
-    dependencies = [module.k8s.id]
-}
-
-module "nfs" {
-    source = "./modules/components/nfs"
-    nfs_server_enabled = var.nfs_server_enabled
-    nfs_chart_version = var.nfs_chart_version
-    nfs_storage_class = var.nfs_storage_class
-    nfs_persistence_enabled = var.nfs_persistence_enabled
-    nfs_disk_size = var.nfs_disk_size
-    dependencies = [module.k8s.id]
-}
-
-module "rook" {
-    source = "./modules/components/rook"
-    rook_enabled = var.rook_enabled
-    rbac_enabled = var.rbac_enabled
-    rook_helm_chart_version = var.rook_helm_chart_version
-    dependencies = [module.k8s.id]
-}
-
-module "certmanager-cloudflare" {
-    source = "./modules/components/certmanager/cloudflare"
-    certmanager_provider = var.certmanager_provider
-    certmanager_helm_chart_version = var.certmanager_helm_chart_version
-    certmanager_email = var.certmanager_email
-    certmanager_solver = var.certmanager_solver
-    ingress_class = var.ingress_provider
-    externaldns_domains = var.externaldns_domains
-    externaldns_api_token = var.externaldns_api_token
-    dependencies = [module.k8s.id]
-    kube_config = module.k8s.kube_config
-}
-
-module "externaldns-cloudflare" {
-    source = "./modules/components/externaldns/cloudflare"
-    externaldns_provider = var.externaldns_provider
-    externaldns_helm_chart_version = var.externaldns_helm_chart_version
-    externaldns_domains = var.externaldns_domains
-    externaldns_api_token = var.externaldns_api_token
-    dependencies = [module.k8s.id]
-}
-
-module "ingress-nginx" {
-    source = "./modules/components/ingress/nginx"
-    ingress_provider = var.ingress_provider
-    ingress_name = var.ingress_name
-    ingress_helm_chart_version = var.ingress_helm_chart_version
-    dependencies = [module.k8s.id]
-}
-
-output "client_key" {
-    value = module.k8s.client_key
-}
-
-output "client_certificate" {
-    value = module.k8s.client_certificate
-}
-
-output "cluster_ca_certificate" {
-    value = module.k8s.cluster_ca_certificate
- }
-
-output "kube_config" {
-    value = module.k8s.kube_config
-}
-
-output "token" {
-    value = module.k8s.token
-}
-
-output "host" {
-    value = module.k8s.host
-}
-
-output "cloud_provider" {
-    value = var.cloud_provider
-}
+## Start Of Digital Ocean Kubernetes Configuration
+## Comment this section if you are not provisioning kubernetes with Digital Ocean
+#  module "k8s" {
+#      source = "./modules/k8s/digitalocean"
+#      cloud_provider = var.cloud_provider
+#      cluster_name = var.cluster_name
+#      location = var.location
+#      kubernetes_version = var.kubernetes_version
+#      default_node_pool_vm_size = var.default_node_pool_vm_size
+#      default_node_pool_name = var.default_node_pool_name
+#      agent_count = var.agent_count
+#      enable_auto_scaling = var.enable_auto_scaling
+#      autoscale_min_count = var.autoscale_min_count
+#      autoscale_max_count = var.autoscale_max_count
+#      environment = var.environment
+#      operator = var.operator
+# }
+## End Of Digital Ocean Kubernetes Configuration

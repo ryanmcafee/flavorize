@@ -48,144 +48,75 @@ Some notable available commands are:
 
     python
 
-### Log into Digital Ocean (Via CLI)
+### Set up your terraform variables file
+
+Sample terraform variable files are included with this repository. They include predefined defaults, however they do not include secrets or protected information. In team environments, you will likely be setting secrets and variables in a ci/cd system like Azure DevOps, Github Actions, CircleCi, Codefresh, Jenkins, etc. Terraform will use these files locally when you run the k8s provision script.
+
+In order to start using the sample terraform.tfvars file for Digital Ocean run the following commands from the root project directory:
+
+    cp examples/terraform.digitalocean.tfvars customizations/terraform.tfvars       
+
+    cp examples/terraform.common.tfvars customizations/terraform.common.tfvars       
+
+After doing so, you will want to set any variables in the terraform.tfvars file that is expecting a replaced value (notably the do_token).
+
+You will now notice 2 .tfvars files under customizations....               
+
+The first is terraform.tfvars, this file tracks variable configuration that is specific to the provisioning requirements for a Kubernetes cluster on a given cloud provider.
+
+The second is terraform.common.auto.tfvars, this file contains variables that are common across cloud providers and controls "flavorizing" your kubernetes cluster provisioning with common things like: ingress, externaldns, monitoring, alerting, etc. The variable is annotated to help you get started. Safe defaults are assumed to help you gradually opt into more kubernetes components as you find you need them.        
+
+### Log into Digital Ocean (Via CLI) & Update Variables
 
 ```
 doctl auth init
 ```
 
-You will be asked to enter your DigitalOcean access token. You can generate a token in the control panel at https://cloud.digitalocean.com/account/api/tokens
+You will be asked to enter your DigitalOcean access token. You can generate a token in the control panel at https://cloud.digitalocean.com/account/api/tokens. 
 Copy and paste the token in and press enter.  
 This will set the auth token so you will be able to utilize the digital ocean cli tool to retrieve available options you can set and control in terraform.tfvars
-Make sure to store this token, you will need it in the next section.
 
-### Set up your terraform variables file
+Now that you know your Digital Ocean Api token, you will need to set the value in customizations/terraform.tfvars.  
 
-A sample terraform variable is included with this repository. It includes predefined defaults, however it does not include secrets or protected information. This information should not be tracked, you can safely keep track of secrets by storing variables locally in terraform.tfvars. Terraform will use this file locally when you run it and attempt to provision your Kubernetes cluster.
+Your changes in customizations/terraform.tfvars are not tracked in git by default as configured in .gitignore.  
 
-In order to start using the sample terraform.tfvars file for Digital Ocean run the following command from the root project directory:
+These variable files are intentionally not tracked to allow for easier consumption and contributions to this library.   
 
-    cp examples/terraform.tfvars.example.digitalocean terraform.tfvars
+For a production system, it is recommended to configure and store variables values and secrets in your ci/cd system.    
 
-After doing so, you will want to set any variables in the terraform.tfvars file that is expecting a replaced value (notably the do_token).
+### Available Variables
 
-### Available Variables (terraform.tfvars)
+For Cloud Provider Specific Variables...     
+See [Digital Ocean Variables](examples/terraform.digitalocean.tfvars)        
 
-// This sets the provider to digital ocean - Required       
-cloud_provider="digitalocean"
-
-// This is your Digital Ocean Api Token which grants terraform the ability to talk to the Digital Ocean api and create resources. - Required        
-do_token="yourdigitaloceanapitoken"
-
-// What you want to call your Kubernetes Cluster and how it appears online and via the api.     
-cluster_name="k8s-do"
-
-// The data center location for your Kubernetes Cluster     
-// Grab the latest available regions by running the command `doctl kubernetes options regions`      
-location="nyc3"
-
-// The Kubernetes version that you want to provision        
-// Grab the latest available kubernetes versions by running the command `doctl kubernetes options versions`     
-kubernetes_version="1.17.5-do.0"
-
-// The name of the default node pool (workers in the kubernetes cluster)        
-default_node_pool_name="agentpool"
-
-// The vm size that should be used for the workers      
-// Grab the latest available kubernetes vm sizes by running the command `doctl kubernetes options sizes`        
-default_node_pool_vm_size="s-2vcpu-2gb"
-
-// The number of worker nodes to provision. This is the base number of worker node instances.       
-agent_count="1"
-
-// Should auto scaling be enabled to support automatic horizontal scaling?      
-enable_auto_scaling="true"
-
-// The minimum number of nodes that should be available in the autoscaling pool     
-autoscale_min_count="1"
-
-// The maximum number of instances that be in the autoscaling pool      
-autoscale_max_count="3"
-
-// Set to an environment name of your choosing      
-environment="dev"
-
-// Set to who will be the operator (Ie..Department, Role, Individual)       
-operator="DevOps"
-
-// Below are valid options you can specify to configure helm charts that will be installed.
-        
-// Valid options are: cloudflare, none      
-certmanager_provider="none"    
-certmanager_helm_chart_version="0.15.0"  
-// Your email to send ssl cert renewal notifications to     
-certmanager_email=""
-
-// The certmanager solver to use. See https://cert-manager.io/docs/configuration/acme/      
-// Valid Options: "HTTP01", "DNS01"     
-certmanager_solver="HTTP01"          
-   
-// Ingress controller configuration      
-ingress_provider="nginx"     
-ingress_name="ingress-nginx"        
-ingress_helm_chart_version="2.1.0"      
-
-// Valid options are: cloudflare, none      
-externaldns_provider="none"   
-externaldns_helm_chart_version="2.22.1"     
-// Domains that you wish to issue certs and create external dns records for     
-external_dns_domains=""      
-// Your cloudflare api token      
-externaldns_api_token=""      
-     
-// Controls the installing of the rook operator via helm    
-rook_enabled="false"    
-rook_helm_chart_version="v1.3.3"    
-
-// Role Base Access Permission   
-rbac_enabled="true"     
-
-// Controls provisioning of a nfs-server with a persistent volume   
-nfs_server_enabled="true"       
-nfs_chart_version="1.0.0"       
-nfs_storage_class="do-block-storage"        
-nfs_persistence_enabled="true"      
-nfs_disk_size="50Gi"       
-
-// Controls provisioning of prometheus via helm     
-prometheus_enabled="false"      
-// Version of Prometheus Helm Chart to use      
-prometheus_chart_version="11.2.3"       
+For common variables for provisioning things like: ingress, externaldns, monitoring, alerting, etc...      
+See [Common Variables](examples/terraform.digitalocean.tfvars)        
 
 ### Provisioning
 
-Confirm that you have set the variables correctly in terraform.tfvars before running the following command to setup the cluster.
+Confirm that you have set the variables correctly before running the following command to setup the cluster.
 
 Run the command:
 
+Bash    
+
     ./provision.sh
+
+Powershell      
+
+    ./provision.ps1
 
 Take a break, this should take between 5-10 minutes.    
 
 After that is completed...
 
-You will need to manually set the environment variable for the kubeconfig variable in order for kubectl to work.
-
-If you are using devops-cli you can do that by running the following command in the container cli:
-
-export KUBECONFIG=credentials/digitalocean/.kube/config        
-
-You will also want to run a similiar command on your host operating system to ensure Vscode Kubernetes extensions knows to use the kubeconfig in the credentials folder.
-
 If it was successful, you should be able to run:
 
-    kubectl get pods --all-namespaces
+    kubectl get pods --all-namespaces   
 
-Note: There are sometimes transient provisioning issues and you may need to run provision.sh twice for it to complete successfully.    
+Note: In order to communicate with the Kubernetes cluster from editors/tools like vscode, you will want to set the KUBECONFIG environment variable to the location of this file on the host system. This file is available in credentials. You may want to copy it to: USERPROFILE/.kube/config (default location kubectl looks at) if you have issues with the above command.
 
-Note: In order to communicate with the Kubernetes cluster from editors/tools like vscode, you will want to set the KUBECONFIG environment variable to the location of this file on the host system.
-
-Note: If the provisioning does not work and you have gone through the above steps, check that you only have one k8s module uncommented in main.tf that matches Digital Ocean.     
+Note: If the provisioning does not work and you have gone through the above steps, check that you only have one k8s module uncommented in main.tf that matches Digital Ocean. You will also want to verify that your variables are correctly supplied and all software dependencies have been met.
 
 If you continue to experience issues please open an issue with details of the issue and we'll help you get it resolved.     
 

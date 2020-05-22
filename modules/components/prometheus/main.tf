@@ -8,7 +8,7 @@ resource "null_resource" "dependency_getter" {
 resource "helm_release" "prometheus" {
   count = var.prometheus_enabled == "true" ? 1 : 0
   name       = "prometheus"
-  chart      = "prometheus"
+  chart      = "prometheus-operator"
   version    = var.prometheus_chart_version
   repository = "https://kubernetes-charts.storage.googleapis.com"
   depends_on = [null_resource.dependency_getter]

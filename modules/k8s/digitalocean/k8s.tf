@@ -1,5 +1,5 @@
 resource "digitalocean_kubernetes_cluster" "k8s" {
-  count = var.cloud_provider == "digitalocean" ? 1 : 0
+  count = var.cloud_provider == "do" ? 1 : 0
   # Set the name of your kubernetes cluster  
   name    = var.cluster_name
   # Set the location/region where your cluster should be provisioned

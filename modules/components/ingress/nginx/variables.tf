@@ -3,9 +3,57 @@ variable ingress_provider {
     default = "none"
 }
 
+variable cloud_provider {
+    type = string
+    default = "none"
+}
+
+variable "ingress_enable_proxy_protocol" {
+    type = string
+    default = "true"
+}
+
+variable "ingress_enable_backend_keepalive" {
+    type = string
+    default = "false"
+}
+
+variable cluster_name {
+    type = string
+    default = "k8s"
+}
+
 variable ingress_name {
     type = string
     default = "ingress-nginx"
+}
+
+variable cluster_dns_domain {
+    default = ""
+}
+
+variable ingress_autoscaling_enabled {
+    default = "false"
+}
+
+variable ingress_controller_use_component_labels {
+    default = "true"
+}
+
+variable "ingress_metrics_enabled" {
+  default = "true"
+}
+
+variable "ingress_controller_metrics_service_monitor_enabled" {
+    default = "true"
+}
+
+variable "ingress_controller_metrics_prometheusRule_enabled" {
+  default = "true"
+}
+
+variable "ingress_num_replicas" {
+  default = "1"
 }
 
 variable ingress_helm_chart_version {

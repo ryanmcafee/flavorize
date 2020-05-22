@@ -48,7 +48,27 @@ Some notable available commands are:
 
     helm
 
-    python
+    python  
+
+### Initialize your terraform variables file (from provided example)
+
+Before logging into Azure, you will want to initialize and setup your terraform variables file.
+
+Sample terraform variable files are included with this repository. They include predefined defaults, however they do not include secrets or protected information. In team environments, you will likely be setting secrets and variables in a ci/cd system like Azure DevOps, Github Actions, CircleCi, Codefresh, Jenkins, etc. Terraform will use these files locally when you run the k8s provision script.
+
+In order to start using the sample terraform.tfvars file for Digital Ocean run the following commands from the root project directory:
+
+    cp examples/terraform.azure.tfvars customizations/terraform.tfvars       
+
+    cp examples/terraform.common.tfvars customizations/terraform.common.tfvars       
+
+After doing so, you will want to set any variables in the terraform.tfvars file that is expecting a replaced value.
+
+You will now notice 2 .tfvars files under customizations....               
+
+The first is terraform.tfvars, this file tracks variable configuration that is specific to the provisioning requirements for a Kubernetes cluster on a given cloud provider.
+
+The second is terraform.common.auto.tfvars, this file contains variables that are common across cloud providers and controls "flavorizing" your kubernetes cluster provisioning with common things like: ingress, externaldns, monitoring, alerting, etc. The variable is annotated to help you get started. Safe defaults are assumed to help you gradually opt into more kubernetes components as you find you need them.   
 
 ### Log into Azure (Via CLI)
 
@@ -56,19 +76,7 @@ Some notable available commands are:
 az login
 ```    
 
-Follow the instructions provided in the cli and then move on to the next section.       
-
-### Initialize your terraform variables file (from provided example)
-
-After logging into Azure, you will want to initialize and setup your terraform variables file.
-
-A sample terraform variable for interacting with Azure is included with this repository. It includes predefined defaults, however does not include include secrets or protected information. This information should not be tracked, you can safely keep track of secrets by storing variables locally in terraform.tfvars. Terraform will use this file locally when you run it and attempt to provision your Kubernetes cluster.
-
-In order to start with the sample terraform.tfvars file for Microsoft Azure run the following command from the root project directory:     
-
-    cp examples/terraform.tfvars.example.azure terraform.tfvars
-
-After doing so, you will want to set any variables in the terraform.tfvars file that is expecting a replaced value (notably arm_subscription_id, arm_client_id & arm_client_secret). You will see how to set these variables in the subsequent sections.
+Follow the instructions provided in the cli and then move on to the next section.     
 
 ### Setup an Azure Service Principal & Setting Values in Terraform Variables File
 
@@ -80,7 +88,7 @@ If you have multiple Azure subscriptions, first query your account with [az acco
 az account list --query "[].{name:name, subscriptionId:id, tenantId:tenantId}"
 ```
 
-After running the above, ensure you set "arm_tenant_id" in terraform.tfvars to the correct azure tenant id you wish to use.
+After running the above, ensure you set "arm_tenant_id" in customizations/terraform.tfvars to the correct azure tenant id you wish to use.
 
 Depending on the Azure account you logged into the Azure CLI with, you may have access to multiple subscriptions. Please ensure that you choose/use the correct Azure Subscription Id.
 
@@ -120,7 +128,7 @@ Powershell:
 az account set --subscription="${Get-ChildItem -Path Env:SUBSCRIPTION_ID}"
 ```
 
-Now that is completed you will need to set "arm_subscription_id" in terraform.tfvars to the value obtained from above. Make sure you set "arm_subscription_id" to the same value of the SUBSCRIPTION_ID environment variable you set above.
+Now that is completed you will need to set "arm_subscription_id" in customizations/terraform.tfvars to the value obtained from above. Make sure you set "arm_subscription_id" to the same value of the SUBSCRIPTION_ID environment variable you set above.
 
 Now that you have set the subscription id, the next step involves creating an Azure Service principal.
 
@@ -136,8 +144,8 @@ Bash
 az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/${SUBSCRIPTION_ID}"
 ```
 
-After running the above, ensure you set "arm_client_id" and "arm_client_secret" in terraform.tfvars to the values obtained from creating the Azure Service Principal.
-You are required to set these variables to the correct values in terraform.tfvars in order for the kubernetes provisioning to successfully complete via terraform.
+After running the above, ensure you set "arm_client_id" and "arm_client_secret" in customizations/terraform.tfvars to the values obtained from creating the Azure Service Principal.
+You are required to set these variables to the correct values in customizations/terraform.tfvars in order for the kubernetes provisioning to successfully complete via terraform.
 
 ### Provisioning
 
@@ -147,7 +155,7 @@ Run the command:
 
     ./provision.sh
 
-The provision shell script will utilize terraform to provision a Kubernetes cluster along with some kubernetes components if you have them configured in terraform.tfvars. The provision script will also output the kube_config in the untracked credentials folder. The kubeconfig file will grant you access to kubernetes cluster and allow you to run additional commands by utilizing kubectl. Make sure to keep the kube_config safe at all times!
+The provision shell script will utilize terraform to provision a Kubernetes cluster along with some kubernetes components if you have them configured in customizations/terraform.tfvars. The provision script will also output the kube_config in the untracked credentials folder. The kubeconfig file will grant you access to kubernetes cluster and allow you to run additional commands by utilizing kubectl. Make sure to keep the kube_config safe at all times!
 
 You will need to manually set the environment variable for the kubeconfig variable in order for kubectl to work.
 
