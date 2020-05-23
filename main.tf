@@ -4,6 +4,15 @@ terraform {
   }
 }
 
+provider "azurerm" {
+    version = "~>2.10.0"
+    subscription_id = var.arm_subscription_id
+    client_id       = var.arm_client_id
+    client_secret   = var.arm_client_secret
+    tenant_id       = var.arm_tenant_id
+    features {}
+}
+
 ## Start Of Azure (AKS) Kubernetes Configuration
 ## Comment this section if you are not provisioning Kubernetes (AKS) with Azure
 module "k8s" {
@@ -38,6 +47,16 @@ module "k8s" {
     availability_zones = var.availability_zones
 }
 ## End Of Azure (AKS) Kubernetes Configuration
+
+variable "do_token" {
+  default = ""
+}
+
+# Configure the DigitalOcean Provider
+provider "digitalocean" {
+  version = "~> 1.18"
+  token = var.do_token
+}
 
 ## Start Of Digital Ocean Kubernetes Configuration
 ## Comment this section if you are not provisioning kubernetes with Digital Ocean
