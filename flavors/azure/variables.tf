@@ -1,15 +1,25 @@
 variable cloud_provider {
-    default = "none"
+    default = "azure"
 }
 
-variable arm_subscription_id {}
+variable arm_tenant_id {
+    type = string
+}
 
-variable arm_client_id {}
+variable arm_subscription_id {
+    type = string
+}
 
-variable arm_client_secret {}
+variable arm_client_id {
+    type = string
+}
+
+variable arm_client_secret {
+    type = string
+}
 
 variable environment {
-  default = "Devlab"
+  default = "Test"
 }
 
 variable operator {
@@ -53,7 +63,7 @@ variable kubernetes_version {
 }
 
 variable node_disk_size {
-    default = 40
+    default = 30
 }
 
 variable network_plugin {

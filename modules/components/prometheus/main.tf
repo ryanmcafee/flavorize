@@ -19,6 +19,6 @@ resource "helm_release" "prometheus" {
   # Fetch latest from https://github.com/helm/charts/blob/master/stable/prometheus/values.yaml and modify for your purposes.
   # File should be stored in customizations/helm/prometheus/values.yaml. This file is not tracked in git to allow more advanced customizations.
   # Apply helm prometheus configuration specific to your requirements
-  values = [ file("${path.root}/customizations/helm/prometheus/values.yaml") ]
+  values = [ file("customizations/helm/prometheus/values.yaml") ]
 
 }

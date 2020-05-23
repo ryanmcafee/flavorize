@@ -1,9 +1,13 @@
 variable cloud_provider {
-    default = "none"
+    default = "do"
+}
+
+variable "do_token" {
+    default = ""
 }
 
 variable cluster_name {
-    default = "k8s-do"
+    default = "k8s"
 }
 
 variable location {

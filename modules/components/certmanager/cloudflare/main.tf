@@ -8,7 +8,7 @@ resource "null_resource" "dependency_getter" {
 resource "local_file" "kube_config" {
   count = var.certmanager_provider == "cloudflare" ? 1 : 0
   content  = var.kube_config
-  filename = "${path.root}/build/kube_config.yaml"
+  filename = "build/kube_config.yaml"
   depends_on = [null_resource.dependency_getter]
 }
 
@@ -77,7 +77,7 @@ resource "local_file" "issuer_http_solver" {
       certmanager_solver = var.certmanager_solver,
       ingress_class = var.ingress_class
   })
-  filename = "${path.root}/build/issuer-http-solver.yaml"
+  filename = "build/issuer-http-solver.yaml"
   depends_on = [null_resource.dependency_getter, local_file.kube_config, helm_release.cert_manager]
 }
 
@@ -103,7 +103,7 @@ resource "local_file" "issuer_dns_solver" {
       certmanager_email = var.certmanager_email,
       externaldns_domains = var.externaldns_domains
   })
-  filename = "${path.root}/build/issuer-dns-solver.yaml"
+  filename = "build/issuer-dns-solver.yaml"
   depends_on = [null_resource.dependency_getter, local_file.kube_config, helm_release.cert_manager]
 }
 
