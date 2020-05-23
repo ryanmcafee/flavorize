@@ -58,6 +58,16 @@ resource "helm_release" "ingress-nginx" {
     value = "${var.cluster_name}-loadbalancer"
   }
 
+  set {
+    name = "controller.service.annotations.external-dns\\.alpha\\.kubernetes\\.io/hostname"
+    value = var.cluster_dns_domain
+  }
+
+  set {
+    name = "controller.service.annotations.external-dns\\.alpha\\.kubernetes\\.io/ttl"
+    value = "1m"
+  }
+
   # Disabled for now due to a terraform helm provider bug
   # See: https://github.com/terraform-providers/terraform-provider-helm/issues/475
   # set {
