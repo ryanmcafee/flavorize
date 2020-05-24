@@ -33,12 +33,12 @@ variable ingress_helm_chart_version {
     default = "2.3.0"
 }
 
-variable "ingress_enable_proxy_protocol" {
+variable ingress_enable_proxy_protocol {
     type = string
     default = "true"
 }
 
-variable "ingress_enable_backend_keepalive" {
+variable ingress_enable_backend_keepalive {
     type = string
     default = "false"
 }
@@ -61,27 +61,37 @@ variable ingress_autoscaling_enabled {
     default = "false"
 }
 
+variable ingress_controller_autoscaling_target_cpu_utilization_percentage {
+  type = string
+  default = 50
+}
+
+variable ingress_controller_autoscaling_target_memory_utilization_percentage {
+  type = string
+  default = 50
+}
+
 variable ingress_controller_use_component_labels {
     type = string
     default = "true"
 }
 
-variable "ingress_metrics_enabled" {
+variable ingress_metrics_enabled {
     type = string
     default = "true"
 }
 
-variable "ingress_controller_metrics_service_monitor_enabled" {
+variable ingress_controller_metrics_service_monitor_enabled {
     type = string
     default = "true"
 }
 
-variable "ingress_controller_metrics_prometheusRule_enabled" {
+variable ingress_controller_metrics_prometheusRule_enabled {
     type = string
     default = "true"
 }
 
-variable "ingress_num_replicas" {
+variable ingress_num_replicas {
     type = string
     default = "1"
 }

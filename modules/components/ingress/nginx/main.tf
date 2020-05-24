@@ -54,18 +54,28 @@ resource "helm_release" "ingress-nginx" {
   }
 
   set {
+    name = "controller.resources.requests.cpu"
+    value = "200m"
+  }
+
+  set {
+    name = "controller.resources.limits.cpu"
+    value = "400m"
+  }
+
+  set {
+    name = "controller.resources.requests.memory"
+    value = "128m"
+  }
+
+  set {
+    name = "controller.resources.limits.memory"
+    value = "512m"
+  }
+
+  set {
     name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/${var.cloud_provider}-loadbalancer-name"
     value = "${var.cluster_name}-loadbalancer"
-  }
-
-  set {
-    name = "controller.service.annotations.external-dns\\.alpha\\.kubernetes\\.io/hostname"
-    value = var.cluster_dns_domain
-  }
-
-  set {
-    name = "controller.service.annotations.external-dns\\.alpha\\.kubernetes\\.io/ttl"
-    value = "1m"
   }
 
   # Disabled for now due to a terraform helm provider bug

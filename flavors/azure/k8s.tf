@@ -97,6 +97,8 @@ module "flavorize" {
     ingress_controller_metrics_service_monitor_enabled = var.ingress_controller_metrics_service_monitor_enabled
     ingress_metrics_enabled = var.ingress_metrics_enabled
     ingress_controller_metrics_prometheusRule_enabled = var.ingress_controller_metrics_prometheusRule_enabled
+    ingress_controller_autoscaling_target_cpu_utilization_percentage = var.ingress_controller_autoscaling_target_cpu_utilization_percentage
+    ingress_controller_autoscaling_target_memory_utilization_percentage = var.ingress_controller_autoscaling_target_memory_utilization_percentage
     k8s = {
       load_config_file = false
       token = ""
