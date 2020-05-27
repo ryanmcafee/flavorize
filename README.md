@@ -6,9 +6,9 @@ Flavorize aims to make it easy to setup and provision a fully working Kubernetes
 
 To setup/provision a Kubernetes cluster, follow the documentation for the appropriate provider. The following guides make it possible to setup a Kubernetes cluster in under 1 hr, on your pick of cloud provider. Your mileage will vary based on your knowledge and experience, but I have aimed to make the setup as streamlined as possible to help encourage the adoption and usage of Kubernetes and other cloud native technologies. Flavorize is now baked into my workflow and can't imagine using Kubernetes without it. I have built kubernetes "flavors" for Azure as well as Digital Ocean of which you may find quick starts on how to use below.
 
-[Azure](docs/providers/Azure.md)        
+[Azure](flavors/azure/readme.md)        
 
-[Digital Ocean](docs/providers/DigitalOcean.md)
+[Digital Ocean](flavors/digitalocean/readme.md)
 
 # Contributing
 
