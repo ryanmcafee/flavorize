@@ -181,4 +181,4 @@ If you continue to experience issues please open an issue with details of the is
 
 Run the following command:      
 
-    terraform destroy -auto-approve     
+    ./destroy.ps1 -flavor azure
