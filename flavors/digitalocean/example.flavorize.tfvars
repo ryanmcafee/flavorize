@@ -49,3 +49,4 @@ nfs_disk_size="20Gi"
 # Prometheus Settings
 prometheus_enabled="true"
 prometheus_chart_version="8.13.8"
+prometheus_chart_custom_values="customizations/workspaces/digitalocean/prometheus-operator/values.yaml"

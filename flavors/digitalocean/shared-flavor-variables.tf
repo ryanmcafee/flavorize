@@ -190,3 +190,8 @@ variable prometheus_chart_version {
   default = "8.13.8"
 }
 
+variable prometheus_chart_custom_values {
+  type = string
+  default = "customizations/prometheus-operator/values.yaml"
+}
+

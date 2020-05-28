@@ -10,7 +10,7 @@ Azure service principal: https://docs.microsoft.com/en-us/cli/azure/create-an-az
 
 ## Setting up tools
 
-In order to provision a kubernetes cluster using terraform you will need a few things installed notably the following:
+In order to provision a Kubernetes cluster using terraform you will need a few things installed notably the following:
 
     Terraform (v12), Azure Cli, Bash, Kubectl and Helm
 
@@ -28,7 +28,7 @@ Run the following command:
 
 You should see all your files and folders. If you do not, ensure you have file and folder sharing enabled in Docker.
 
-Next you will want to create an ssh key that will be used to allow you to connect to your kubernetes cluster via ssh.       
+Next you will want to create an ssh key that will be used to allow you to connect to your Kubernetes cluster via ssh.       
 You will need to set an ssh key in the default location of credentials/ssh/id_rsa.pub .
 If you do not have an ssh key already generated, you can generate one with the command:     
 
@@ -52,23 +52,23 @@ Some notable available commands are:
 
 ### Initialize your terraform variables file (from provided example)
 
-Before logging into Azure, you will want to initialize and setup your terraform variables file.
-
 Sample terraform variable files are included with this repository. They include predefined defaults, however they do not include secrets or protected information. In team environments, you will likely be setting secrets and variables in a ci/cd system like Azure DevOps, Github Actions, CircleCi, Codefresh, Jenkins, etc. Terraform will use these files locally when you run the k8s provision script.
 
-In order to start using the sample terraform.tfvars file for Digital Ocean run the following commands from the root project directory:
+In order to start using the sample .tfvars files for Azure run the following commands from the root project directory:
 
-    cp examples/terraform.azure.tfvars customizations/terraform.tfvars       
+    terraform workspace new azure
 
-    cp examples/terraform.common.tfvars customizations/terraform.common.tfvars       
+    cp flavors/azure/example.provider.tfvars customizations/workspaces/azure/provider.tfvars       
 
-After doing so, you will want to set any variables in the terraform.tfvars file that is expecting a replaced value.
+    cp flavors/azure/example.flavorize.tfvars customizations/workspaces/azure/flavorize.tfvars       
 
-You will now notice 2 .tfvars files under customizations....               
+After doing so, you will want to set any variables in the .tfvars files that are expecting a replaced value.
 
-The first is terraform.tfvars, this file tracks variable configuration that is specific to the provisioning requirements for a Kubernetes cluster on a given cloud provider.
+In the directory: customizations/workspaces/azure...You will now notice 2 .tfvars files               
 
-The second is terraform.common.auto.tfvars, this file contains variables that are common across cloud providers and controls "flavorizing" your kubernetes cluster provisioning with common things like: ingress, externaldns, monitoring, alerting, etc. The variable is annotated to help you get started. Safe defaults are assumed to help you gradually opt into more kubernetes components as you find you need them.   
+The first is provider.tfvars, this file tracks variable configuration that is specific to the provisioning requirements for a Kubernetes cluster on a given cloud provider.
+
+The second is flavorize.tfvars, this file contains variables that are common across cloud providers and controls "flavorizing" your kubernetes cluster provisioning with common things like: ingress, externaldns, monitoring, alerting, etc. The variable is annotated to help you get started. Safe defaults are assumed to help you gradually opt into more kubernetes components as you find you need them. 
 
 ### Log into Azure (Via CLI)
 
@@ -88,9 +88,7 @@ If you have multiple Azure subscriptions, first query your account with [az acco
 az account list --query "[].{name:name, subscriptionId:id, tenantId:tenantId}"
 ```
 
-After running the above, ensure you set "arm_tenant_id" in customizations/terraform.tfvars to the correct azure tenant id you wish to use.
-
-Depending on the Azure account you logged into the Azure CLI with, you may have access to multiple subscriptions. Please ensure that you choose/use the correct Azure Subscription Id.
+Depending on the Azure account you logged into the Azure CLI with, you may have access to multiple subscriptions. Please ensure that you choose/use the correct Azure Subscription Id.  
 
 Set the SUBSCRIPTION_ID environment variable to hold the value of the returned id field from the subscription you want to use:
 
@@ -104,33 +102,9 @@ Bash:
 export SUBSCRIPTION_ID='xxxx-xxxx-xxxx-xxxx'
 ```
 
-You will also need to set the TENANT_ID environment variable to hold the value of the tenant that you want to use:      
+After running the above, ensure you set "arm_tenant_id" and "arm_subscription_id" in customizations/workspaces/azure/provider.tfvars to the correct azure values you wish to use.
 
-Powershell:
-```
-Set-Item -Path Env:TENANT_ID -Value 'xxxx-xxxx-xxxx-xxxx'
-```
-
-Bash:
-```
-export TENANT_ID='xxxx-xxxx-xxxx-xxxx'
-```
-
-To use a selected subscription, set the subscription for this session with [az account set](https://docs.microsoft.com/en-us/cli/azure/account#az-account-set)    
-
-Bash
-```
-az account set --subscription="${SUBSCRIPTION_ID}"
-```
-
-Powershell:
-```
-az account set --subscription="${Get-ChildItem -Path Env:SUBSCRIPTION_ID}"
-```
-
-Now that is completed you will need to set "arm_subscription_id" in customizations/terraform.tfvars to the value obtained from above. Make sure you set "arm_subscription_id" to the same value of the SUBSCRIPTION_ID environment variable you set above.
-
-Now that you have set the subscription id, the next step involves creating an Azure Service principal.
+Now that you have set the tenant id and subscription id, the next step involves creating an Azure Service principal.
 
 To create/setup a service principal for use with Terraform. Use [az ad sp create-for-rbac](https://docs.microsoft.com/en-us/cli/azure/ad/sp#az-ad-sp-create-for-rbac), and set the scope to your subscription as follows:
 
@@ -144,20 +118,22 @@ Bash
 az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/${SUBSCRIPTION_ID}"
 ```
 
-After running the above, ensure you set "arm_client_id" and "arm_client_secret" in customizations/terraform.tfvars to the values obtained from creating the Azure Service Principal.
-You are required to set these variables to the correct values in customizations/terraform.tfvars in order for the kubernetes provisioning to successfully complete via terraform.
+After running the above, ensure you set "arm_client_id" and "arm_client_secret" in customizations/workspaces/azure/provider.tfvars to the values obtained from creating the Azure Service Principal.
+You are required to set these variables to the correct values in customizations/workspaces/azure/provider.tfvars in order for the Kubernetes provisioning to successfully complete via Terraform.
+
+You will want to also review and set values in: customizations/workspaces/azure/flavorize.tfvars that work best for your workflow.
 
 ### Provisioning
 
-Now that you have the boring stuff out the way, let's provision a kubernetes cluster!
+Now that you have the boring stuff out the way, let's provision a Kubernetes cluster!
 
 Run the command:
 
-    ./provision.sh
+    ./provision.sh -flavor azure
 
-The provision shell script will utilize terraform to provision a Kubernetes cluster along with some kubernetes components if you have them configured in customizations/terraform.tfvars. The provision script will also output the kube_config in the untracked credentials folder. The kubeconfig file will grant you access to kubernetes cluster and allow you to run additional commands by utilizing kubectl. Make sure to keep the kube_config safe at all times!
+The provision script will utilize terraform to provision a Kubernetes cluster along with some Kubernetes components if you have them configured in customizations/workspaces/azure/flavorize.tfvars. The provision script will also output the kube_config in the untracked credentials folder. The kubeconfig file will grant you access to the Kubernetes cluster and allow you to run additional commands by utilizing kubectl. Make sure to keep the kube_config safe at all times!
 
-You will need to manually set the environment variable for the kubeconfig variable in order for kubectl to work.
+You may need need to manually set the environment variable for the kubeconfig variable in order for kubectl to work.
 
 If you are using devops-cli you can do that by running the following command in the container cli:
 
@@ -169,11 +145,7 @@ If the provisioning was successful, you should be able to run the following comm
 
     kubectl get pods --all-namespaces
 
-Note: There are sometimes transient provisioning issues and you may need to run provision.sh twice for it to complete successfully.    
-
 Note: In order to communicate with the Kubernetes cluster from editors/tools like vscode, you will want to set the KUBECONFIG environment variable to the location of this file on the host system.
-
-Note: If the provisioning does not work and you have gone through the above steps, check that you only have one k8s module uncommented in main.tf that matches Azure.     
 
 If you continue to experience issues please open an issue with details of the issue and we'll help you get it resolved. 
 

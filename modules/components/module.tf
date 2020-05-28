@@ -2,6 +2,7 @@ module "prometheus" {
     source = "../../modules/components/prometheus"
     prometheus_enabled = var.prometheus_enabled
     prometheus_chart_version = var.prometheus_chart_version
+    prometheus_chart_custom_values = var.prometheus_chart_custom_values
     dependencies = var.dependencies
 }
 

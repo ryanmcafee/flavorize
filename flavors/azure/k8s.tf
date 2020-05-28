@@ -67,6 +67,7 @@ module "flavorize" {
     source = "../../modules/components"
     prometheus_enabled = var.prometheus_enabled
     prometheus_chart_version = var.prometheus_chart_version
+    prometheus_chart_custom_values = var.prometheus_chart_custom_values
     nfs_server_enabled = var.nfs_server_enabled
     nfs_chart_version = var.nfs_chart_version
     nfs_storage_class = var.nfs_storage_class
