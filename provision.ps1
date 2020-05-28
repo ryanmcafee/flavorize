@@ -9,58 +9,66 @@ Param(
     [string[]]$Args
 )
 
-If (-NOT  ($flavor -eq $tf_workspace)) {
-    Write-Output "Warning: Terraform workspace and chosen flavor don't match"
-    Write-Output "This may result in your configuration getting overwritten"
-    Write-Output "To resolve this run: terraform workspace new ${flavor}"
-}
+try {
 
-If ($flavor -like "azure") {
-    # Check if the ssh public key (needed for azure aks provisioning already exists)
-    If (-NOT (Test-Path "credentials/ssh/id_rsa.pub")) {
-        # Create credentials/ssh directory if it doesn't already exist
-        New-Item -ItemType Directory -Path credentials/ssh -Force | Out-Null
-        # Generate the ssh key
-        ssh-keygen -t rsa -b 2048 -f credentials/ssh/id_rsa -N '""'
+    $terraformstatuscode = 1;
+
+    If (-NOT  ($flavor -eq $tf_workspace)) {
+        Write-Output "Warning: Terraform workspace and chosen flavor don't match"
+        Write-Output "This may result in your configuration getting overwritten"
+        Write-Output "To resolve this run: terraform workspace new ${flavor}"
     }
     
-}
+    If ($flavor -like "azure") {
+        # Check if the ssh public key (needed for azure aks provisioning already exists)
+        If (-NOT (Test-Path "credentials/ssh/id_rsa.pub")) {
+            # Create credentials/ssh directory if it doesn't already exist
+            New-Item -ItemType Directory -Path credentials/ssh -Force | Out-Null
+            # Generate the ssh key
+            ssh-keygen -t rsa -b 2048 -f credentials/ssh/id_rsa -N '""'
+        }
+        
+    }
 
-#Initialize terraform
-terraform init flavors/${flavor}
+    #Initialize terraform
+    terraform init flavors/${flavor}
 
-# Store where the terraform plan will be outputted
-Set-Variable -Name plan -Value "out.plan"
+    # Store where the terraform plan will be outputted
+    Set-Variable -Name plan -Value "out.plan"
 
-$provider_specific_variable_file=If (Test-Path "customizations/workspaces/${tf_workspace}/provider.tfvars" -PathType Leaf) {"customizations/workspaces/${tf_workspace}/provider.tfvars"} Else {"customizations/provider.tfvars"}
-$flavor_variable_file=If (Test-Path "customizations/workspaces/${tf_workspace}/flavorize.tfvars" -PathType Leaf) {"customizations/workspaces/${tf_workspace}/flavorize.tfvars"} Else {"customizations/flavorize.tfvars"}
+    $provider_specific_variable_file=If (Test-Path "customizations/workspaces/${tf_workspace}/provider.tfvars" -PathType Leaf) {"customizations/workspaces/${tf_workspace}/provider.tfvars"} Else {"customizations/provider.tfvars"}
+    $flavor_variable_file=If (Test-Path "customizations/workspaces/${tf_workspace}/flavorize.tfvars" -PathType Leaf) {"customizations/workspaces/${tf_workspace}/flavorize.tfvars"} Else {"customizations/flavorize.tfvars"}
 
-#Create the terraform plan
-terraform plan -detailed-exitcode -var-file="${provider_specific_variable_file}" -var-file="${flavor_variable_file}" -out="${plan}" flavors/${flavor}
-
-$terraformstatuscode = 0;
-
-try {
+    $terraformstatuscode = 0;
+    #Create the terraform plan
+    terraform plan -detailed-exitcode -var-file="${provider_specific_variable_file}" -var-file="${flavor_variable_file}" -out="${plan}" flavors/${flavor}
     #Apply the terraform plan
     terraform apply $plan
+
+    $terraformstatuscode = 0;
+
 } catch [System.SystemException] {
+
     Write-Host "An error occurred during provisioning!"
-    $terraformstatuscode = 1;
+
 }
 
 # Only run rest of script if terraform provisioning is successful
 If ($terraformstatuscode -ne 1) {
 
+    $preexisting_kubeconfig = (Resolve-Path -Path "~\.kube\config")
+
     # Create directory to store k8s credentials
     New-Item -ItemType Directory -Path $kube_config_dir -Force | Out-Null
-
     $new_kubeconfig = Join-Path -Path (Resolve-Path -Path $kube_config_dir) -ChildPath "config"
 
     # Write the kube_config file out to disk
     Invoke-Expression -Command "terraform output kube_config" | Out-File -FilePath $new_kubeconfig
 
+    $kubeconfig_seperator = $IsWindows ? ';' : ':'
+
     # Set kubeconfig environment variable
-    [System.Environment]::SetEnvironmentVariable('KUBECONFIG',"${new_kubeconfig}:${$preexisting_kubeconfig}")
+    [System.Environment]::SetEnvironmentVariable('KUBECONFIG',"${new_kubeconfig}${kubeconfig_seperator}${preexisting_kubeconfig}")
 
     # Create the kube config directory under user path if it doesn't exist
     New-Item -ItemType Directory -Path ~\.kube -Force | Out-Null
