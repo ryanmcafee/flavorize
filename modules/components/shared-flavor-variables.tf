@@ -1,141 +1,25 @@
-variable arm_tenant_id {
+variable k8s {
+    type = map
+    default = {
+        load_config_file = "false"
+        kube_config = ""
+        token = ""
+        host = ""
+        client_certificate = ""
+        client_key = ""
+        cluster_ca_certificate = ""
+    }
+}
+
+variable dependencies {
+  description = "Create a dependency between the resources in this module to the interpolated values in this list (and thus the source resources). In other words, the resources in this module will now depend on the resources backing the values in this list such that those resources need to be created before the resources in this module, and the resources in this module need to be destroyed before the resources in the list."
+  type        = list(string)
+  default     = []
+}
+
+variable kube_config {
     type = string
     default = ""
-}
-
-variable arm_subscription_id {
-    type = string
-    default = ""
-}
-
-variable arm_client_id {
-    type = string
-    default = ""
-}
-
-variable arm_client_secret {
-    type = string
-    default = ""
-}
-
-variable cloud_provider {
-    type = string
-    default = "none"
-}
-
-variable environment {
-    type = string
-    default = "dev"
-}
-
-variable operator {
-    type = string
-    default = "DevOps"
-}
-
-variable agent_count {
-    default = 1
-}
-
-variable autoscale_min_count {
-    default = null
-}
-
-variable autoscale_max_count {
-    default = null
-}
-
-variable enable_auto_scaling {
-    default = false
-}
-
-variable dns_prefix {
-    type = string
-    default = "k8s"
-}
-
-variable cluster_name {
-    type = string
-    default = "k8s"
-}
-
-variable resource_group_name {
-    type = string
-    default = "azure-k8s"
-}
-
-variable location {
-    type = string
-    default = "East US"
-}
-
-variable kubernetes_version {
-    type = string
-    default = "1.16.7"
-}
-
-variable node_disk_size {
-    type = string
-    default = 40
-}
-
-variable network_plugin {
-    type = string
-    default = "azure"
-}
-
-variable network_policy {
-    type = string
-    default = "calico"
-}
-
-variable service_cidr {
-    type = string
-    default = "172.100.0.0/24"
-}
-
-variable dns_service_ip {
-    type = string
-    default = "172.100.0.10"
-}
-
-variable docker_bridge_cidr {
-    type = string
-    default = "172.101.0.1/16"
-}
-
-variable load_balancer_sku {
-    type = string
-    default = "Standard"
-}
-
-variable linux_profile_admin_username {
-    type = string
-    default = "ubuntu"
-}
-
-variable ssh_key {
-    type = string
-    default = "credentials/ssh/id_rsa.pub"
-}
-
-variable default_node_pool_name {
-    type = string
-    default = "agentpool"
-}
-
-variable default_node_pool_vm_size {
-    type = string
-    default = "Standard_B4ms"
-}
-
-variable enable_kube_dashboard {
-    type = string
-    default = true
-}
-
-variable availability_zones {
-    default = ["1", "2", "3"]
 }
 
 # Ingress Settings
@@ -149,12 +33,12 @@ variable ingress_helm_chart_version {
     default = "2.3.0"
 }
 
-variable "ingress_enable_proxy_protocol" {
+variable ingress_enable_proxy_protocol {
     type = string
     default = "true"
 }
 
-variable "ingress_enable_backend_keepalive" {
+variable ingress_enable_backend_keepalive {
     type = string
     default = "false"
 }
@@ -177,27 +61,37 @@ variable ingress_autoscaling_enabled {
     default = "false"
 }
 
+variable ingress_controller_autoscaling_target_cpu_utilization_percentage {
+  type = string
+  default = "50"
+}
+
+variable ingress_controller_autoscaling_target_memory_utilization_percentage {
+  type = string
+  default = "50"
+}
+
 variable ingress_controller_use_component_labels {
     type = string
     default = "true"
 }
 
-variable "ingress_metrics_enabled" {
+variable ingress_metrics_enabled {
     type = string
     default = "true"
 }
 
-variable "ingress_controller_metrics_service_monitor_enabled" {
+variable ingress_controller_metrics_service_monitor_enabled {
     type = string
     default = "true"
 }
 
-variable "ingress_controller_metrics_prometheusRule_enabled" {
+variable ingress_controller_metrics_prometheusRule_enabled {
     type = string
     default = "true"
 }
 
-variable "ingress_num_replicas" {
+variable ingress_num_replicas {
     type = string
     default = "1"
 }
@@ -294,5 +188,10 @@ variable prometheus_enabled {
 variable prometheus_chart_version {
   type = string
   default = "8.13.8"
+}
+
+variable prometheus_chart_custom_values {
+  type = string
+  default = "customizations/prometheus-operator/values.yaml"
 }
 

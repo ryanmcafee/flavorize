@@ -26,3 +26,6 @@ output "kube_config" {
     value = digitalocean_kubernetes_cluster.k8s[0].kube_config.0.raw_config
 }
 
+output "cloud_provider" {
+    value = var.cloud_provider
+}

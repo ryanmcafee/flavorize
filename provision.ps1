@@ -1,33 +1,99 @@
-#Initialize terraform
-terraform init
+#! /usr/bin/pwsh
 
-# Store where the terraform plan will be outputted
-Set-Variable -Name plan -Value "out.plan"
+[CmdletBinding()]
+Param(
+    [string]$flavor = "azure",
+    [string]$tf_workspace = (Invoke-Expression -Command "terraform workspace show").Trim(),
+    [string]$kube_config_dir = "credentials/workspaces/${tf_workspace}/.kube",
+    [Parameter(Position=0,Mandatory=$false,ValueFromRemainingArguments=$true)]
+    [string[]]$Args
+)
 
-#Create the terraform plan
-terraform plan -var-file="customizations/terraform.tfvars" -var-file="customizations/terraform.common.tfvars" -out $plan
+try {
 
-#Apply the terraform plan
-terraform apply $plan
+    $terraformstatuscode = 1;
 
-# Cleanup
-Remove-Item -Path "build/*" -ErrorAction Ignore -Recurse
+    If (-NOT  ($flavor -eq $tf_workspace)) {
+        Write-Output "Warning: Terraform workspace and chosen flavor don't match"
+        Write-Output "This may result in your configuration getting overwritten"
+        Write-Output "To resolve this run: terraform workspace new ${flavor}"
+    }
+    
+    If ($flavor -like "azure") {
+        # Check if the ssh public key (needed for azure aks provisioning already exists)
+        If (-NOT (Test-Path "credentials/ssh/id_rsa.pub")) {
+            # Create credentials/ssh directory if it doesn't already exist
+            New-Item -ItemType Directory -Path credentials/ssh -Force | Out-Null
+            # Generate the ssh key
+            ssh-keygen -t rsa -b 2048 -f credentials/ssh/id_rsa -N '""'
+        }
+        
+    }
 
-# Get what cloud_provider was used (also removes whitespace from variable)
-$cloud_provider = (Invoke-Expression -Command "terraform output cloud_provider").Trim();
+    #Initialize terraform
+    terraform init flavors/${flavor}
 
-# Create directory to store k8s credentials
-New-Item -ItemType "directory" -Path "credentials/${cloud_provider}/.kube" -Force | Out-Null
+    # Store where the terraform plan will be outputted
+    Set-Variable -Name plan -Value "out.plan"
 
-# Store relative path to where the generated kube config file is stored
-Set-Variable -Name KubeConfigRelativePath -Value "credentials/${cloud_provider}/.kube/config"
+    $provider_specific_variable_file=If (Test-Path "customizations/workspaces/${tf_workspace}/provider.tfvars" -PathType Leaf) {"customizations/workspaces/${tf_workspace}/provider.tfvars"} Else {"customizations/provider.tfvars"}
+    $flavor_variable_file=If (Test-Path "customizations/workspaces/${tf_workspace}/flavorize.tfvars" -PathType Leaf) {"customizations/workspaces/${tf_workspace}/flavorize.tfvars"} Else {"customizations/flavorize.tfvars"}
 
-# Write the kube_config file out to disk. Store in credentials folder under ${cloud_provider}/.kube
-Invoke-Expression -Command "terraform output kube_config" | Out-File -FilePath $KubeConfigRelativePath
+    $terraformstatuscode = 0;
+    #Create the terraform plan
+    terraform plan -detailed-exitcode -var-file="${provider_specific_variable_file}" -var-file="${flavor_variable_file}" -out="${plan}" flavors/${flavor}
+    #Apply the terraform plan
+    terraform apply $plan
 
-# Calculate and set path env variable to the kubeconfig file
-# Necessary so kubectl will work regardless of directory and will ensure correct kubernetes cluster context is used../
-Set-Item -Path env:KUBECONFIG ${Resolve-Path -Path $KubeConfigRelativePath}
+    $terraformstatuscode = 0;
 
-# Remove terraform output plan for consistent results and allow for seamless provider upgrades. 
-Remove-Item $plan -ErrorAction Ignore
+} catch [System.SystemException] {
+
+    Write-Host "An error occurred during provisioning!"
+
+}
+
+# Only run rest of script if terraform provisioning is successful
+If ($terraformstatuscode -ne 1) {
+
+    $preexisting_kubeconfig = (Resolve-Path -Path "~\.kube\config")
+
+    # Create directory to store k8s credentials
+    New-Item -ItemType Directory -Path $kube_config_dir -Force | Out-Null
+    $new_kubeconfig = Join-Path -Path (Resolve-Path -Path $kube_config_dir) -ChildPath "config"
+
+    # Write the kube_config file out to disk
+    Invoke-Expression -Command "terraform output kube_config" | Out-File -FilePath $new_kubeconfig
+
+    $kubeconfig_seperator = $IsWindows ? ';' : ':'
+
+    # Set kubeconfig environment variable
+    [System.Environment]::SetEnvironmentVariable('KUBECONFIG',"${new_kubeconfig}${kubeconfig_seperator}${preexisting_kubeconfig}")
+
+    # Create the kube config directory under user path if it doesn't exist
+    New-Item -ItemType Directory -Path ~\.kube -Force | Out-Null
+
+    # Output the current kubeconfig to disk
+    Invoke-Expression -Command "kubectl config view --raw" | Out-File -FilePath ~\.kube\config_new
+
+    # Move the merged kubeconfig file to become standard one
+    Move-Item ~\.kube\config_new ~\.kube\config -Force
+
+    Copy-Item -Path ~\.kube\config -Destination "credentials/kubeconfig" -Force
+
+    # Cleanup
+    Remove-Item -Path "build/*" -ErrorAction Ignore -Recurse
+    # Remove terraform output plan for consistent results and allow for seamless provider upgrades. 
+    Remove-Item $plan -ErrorAction Ignore
+
+    Write-Output "Merged kubeconfig files!"
+    Write-Output "Merged kubeconfig file outputted to: credentials/kubeconfig"
+    Write-Output "You're good to go!"
+    Write-Output "Try running the following command: kubectl get pods --all-namespaces"
+}
+
+
+
+
+
+

@@ -16,7 +16,7 @@ default_node_pool_name="k8s-agentpool"
 # The droplet vm size to use for a given worker node in the Kubernetes cluster.
 default_node_pool_vm_size="s-2vcpu-4gb"
 # A distinct name you can use to identify your k8s cluster
-cluster_name="k8s"
+cluster_name="digitalocean-k8s"
 # What version of k8s do you want to deploy?
 kubernetes_version="1.17.5-do.0"
 # Examples: Production, Staging, Qa, Test, Dr, Dev, etc..
