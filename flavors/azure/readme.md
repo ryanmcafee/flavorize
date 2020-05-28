@@ -133,14 +133,25 @@ Run the command:
 
 The provision script will utilize terraform to provision a Kubernetes cluster along with some Kubernetes components if you have them configured in customizations/workspaces/azure/flavorize.tfvars. The provision script will also output the kube_config in the untracked credentials folder. The kubeconfig file will grant you access to the Kubernetes cluster and allow you to run additional commands by utilizing kubectl. Make sure to keep the kube_config safe at all times!
 
-You may need need to manually set the environment variable for the kubeconfig variable in order for kubectl to work.
+The provisioning script will auto merge your kubeconfig files if you already have one.      
 
-If you are using devops-cli you can do that by running the following command in the container cli:
+If you are running the provisioning from inside a container, your kubeconfig will need to be set on your host os in order to use kubectl from your host os, vscode, etc.
 
-export KUBECONFIG=credentials/azure/.kube/config        
+You can set it on your host os as follows:      
 
-You will also want to run a similiar command on your host operating system to ensure Vscode Kubernetes extensions know to use the kubeconfig in the credentials folder.
+Powershell:     
 
+    $kube_config_dir = (([System.Environment]::GetEnvironmentVariable('USERPROFILE'))+"\.kube")
+    New-Item -ItemType Directory -Path $kube_config_dir -Force
+    Copy-Item -Path credentials/kubeconfig -Destination "${kube_config_dir}\config"
+    [System.Environment]::SetEnvironmentVariable('KUBECONFIG', "${kube_config_dir}\config")
+
+Bash:   
+
+    mkdir -p ~/.kube
+    cp credentials/kubeconfig ~/.kube/config
+    export KUBECONFIG=~/.kube/config
+    
 If the provisioning was successful, you should be able to run the following command that will output running pods in the cluster:
 
     kubectl get pods --all-namespaces

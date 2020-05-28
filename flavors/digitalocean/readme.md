@@ -104,18 +104,32 @@ Run the command:
 
 Take a break, this should take between 5-10 minutes.    
 
-After that is completed...
+The provisioning script will auto merge your kubeconfig files if you already have one.      
 
-If it was successful, you should be able to run:
+If you are running the provisioning from inside a container, your kubeconfig will need to be set on your host os in order to use kubectl from your host os, vscode, etc.
 
-    kubectl get pods --all-namespaces   
+You can set it on your host os as follows:      
 
-Note: In order to communicate with the Kubernetes cluster from editors/tools like vscode, you will want to set the KUBECONFIG environment variable to the location of this file on the host system. This file is available in credentials. You may want to copy it to: USERPROFILE/.kube/config (default location kubectl looks at) if you have issues with the above command.
+Powershell:     
+
+    $kube_config_dir = (([System.Environment]::GetEnvironmentVariable('USERPROFILE'))+"\.kube")
+    New-Item -ItemType Directory -Path $kube_config_dir -Force
+    Copy-Item -Path credentials/kubeconfig -Destination "${kube_config_dir}\config"
+    [System.Environment]::SetEnvironmentVariable('KUBECONFIG', "${kube_config_dir}\config")
+
+Bash:   
+
+    mkdir -p ~/.kube
+    cp credentials/kubeconfig ~/.kube/config
+    export KUBECONFIG=~/.kube/config
+    
+If the provisioning was successful, you should be able to run the following command that will output running pods in the cluster:
+
+    kubectl get pods --all-namespaces
 
 Note: If the provisioning does not work and you have gone through the above steps, check that your variables are correctly set and all software dependencies have been met.
 
 If you continue to experience issues please open an issue with details of the issue and we'll help you get it resolved.     
-
 
 # Destroying/ Tearing Down Cluster
 
