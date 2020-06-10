@@ -1,11 +1,10 @@
-#! /usr/bin/pwsh
-
 [CmdletBinding()]
 Param(
     [string]$flavor = "azure",
     [string]$tf_workspace = (Invoke-Expression -Command "terraform workspace show").Trim(),
     [string]$kube_config_dir = "credentials/workspaces/${tf_workspace}/.kube",
-    [Parameter(Position=0,Mandatory=$false,ValueFromRemainingArguments=$true)]
+    [string]$auto_approve = "false",
+    [Parameter(Position = 0, Mandatory = $false, ValueFromRemainingArguments = $true)]
     [string[]]$Args
 )
 
@@ -39,18 +38,21 @@ try {
     $provider_specific_variable_file=If (Test-Path "customizations/workspaces/${tf_workspace}/provider.tfvars" -PathType Leaf) {"customizations/workspaces/${tf_workspace}/provider.tfvars"} Else {"customizations/provider.tfvars"}
     $flavor_variable_file=If (Test-Path "customizations/workspaces/${tf_workspace}/flavorize.tfvars" -PathType Leaf) {"customizations/workspaces/${tf_workspace}/flavorize.tfvars"} Else {"customizations/flavorize.tfvars"}
 
-    $terraformstatuscode = 0;
     #Create the terraform plan
     terraform plan -detailed-exitcode -var-file="${provider_specific_variable_file}" -var-file="${flavor_variable_file}" -out="${plan}" flavors/${flavor}
-    #Apply the terraform plan
-    terraform apply $plan
 
-    $terraformstatuscode = 0;
+    if ($auto_approve -eq "true") {
+        #Apply the terraform plan
+        terraform apply $plan
+    } else {
+        terraform apply -var-file="${provider_specific_variable_file}" -var-file="${flavor_variable_file}" flavors/${flavor}
+    }
 
 } catch [System.SystemException] {
 
     Write-Host "An error occurred during provisioning!"
 
+    $terraformstatuscode = 0;
 }
 
 # Only run rest of script if terraform provisioning is successful
@@ -91,9 +93,3 @@ If ($terraformstatuscode -ne 1) {
     Write-Output "You're good to go!"
     Write-Output "Try running the following command: kubectl get pods --all-namespaces"
 }
-
-
-
-
-
-
