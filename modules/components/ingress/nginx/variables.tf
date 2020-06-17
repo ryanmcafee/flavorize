@@ -1,74 +1,41 @@
-variable ingress_provider {
-    type = string
-    default = "none"
+variable ingress_nginx_enabled {
+  string = string
+  default = "false"
 }
 
-variable cloud_provider {
+variable ingress_nginx_helm_chart_version {
     type = string
-    default = "none"
+    default = "2.1.0"
 }
 
-variable ingress_enable_proxy_protocol {
-    type = string
-    default = "true"
+variable ingress_nginx_chart_custom_values {
+  type = string
+  default = "customizations/ingress-nginx/values.yaml"
 }
 
-variable ingress_enable_backend_keepalive {
+variable namespace {
     type = string
-    default = "false"
+    default = "kube-system"
 }
 
-variable cluster_name {
-    type = string
-    default = "k8s"
-}
-
-variable ingress_name {
+variable name {
     type = string
     default = "ingress-nginx"
 }
 
-variable cluster_dns_domain {
-    default = ""
-}
-
-variable ingress_autoscaling_enabled {
-    default = "false"
-}
-
-variable ingress_controller_use_component_labels {
-    default = "true"
-}
-
-variable ingress_metrics_enabled {
-  default = "true"
-}
-
-variable ingress_controller_metrics_service_monitor_enabled {
-    default = "true"
-}
-
-variable ingress_controller_metrics_prometheusRule_enabled {
-  default = "true"
-}
-
-variable ingress_controller_autoscaling_target_cpu_utilization_percentage {
-  type = string
-  default = "50"
-}
-
-variable ingress_controller_autoscaling_target_memory_utilization_percentage {
-  type = string
-  default = "50"
-}
-
-variable ingress_num_replicas {
-  default = "1"
-}
-
-variable ingress_helm_chart_version {
+variable repository {
     type = string
-    default = "2.1.0"
+    default = "https://kubernetes.github.io/ingress-nginx"
+}
+
+variable create_namespace {
+    type = string
+    default = "true"
+}
+
+variable force_update {
+    type = string
+    default = "true"
 }
 
 variable dependencies {

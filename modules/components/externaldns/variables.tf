@@ -1,6 +1,6 @@
-variable externaldns_provider {
+variable externaldns_enabled {
     type = string
-    default = "none"
+    default = "false"
 }
 
 variable externaldns_helm_chart_version {
@@ -8,14 +8,34 @@ variable externaldns_helm_chart_version {
     default = "2.22.1"
 }
 
-variable externaldns_api_token {
-    type = string
-    default = "none"
+variable externaldns_chart_custom_values {
+  type = string
+  default = "customizations/externaldns/values.yaml"
 }
 
-variable externaldns_domains {
+variable namespace {
     type = string
-    default = "none"
+    default = "kube-system"
+}
+
+variable name {
+    type = string
+    default = "external-dns"
+}
+
+variable repository {
+    type = string
+    default = "https://charts.bitnami.com/bitnami"
+}
+
+variable create_namespace {
+    type = string
+    default = "true"
+}
+
+variable force_update {
+    type = string
+    default = "true"
 }
 
 variable dependencies {

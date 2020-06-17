@@ -37,8 +37,8 @@ module "certmanager-cloudflare" {
     kube_config = var.k8s.kube_config
 }
 
-module "externaldns-cloudflare" {
-    source = "../../modules/components/externaldns/cloudflare"
+module "externaldns" {
+    source = "../../modules/components/externaldns"
     externaldns_provider = var.externaldns_provider
     externaldns_helm_chart_version = var.externaldns_helm_chart_version
     externaldns_domains = var.externaldns_domains

@@ -13,6 +13,31 @@ variable prometheus_chart_custom_values {
   default = "customizations/prometheus-operator/values.yaml"
 }
 
+variable namespace {
+  type = string
+  default = "kube-system"
+}
+
+variable name {
+  type = string
+  default = "ops"
+}
+
+variable repository {
+    type = string
+    default = "https://kubernetes-charts.storage.googleapis.com"
+}
+
+variable create_namespace {
+    type = string
+    default = "true"
+}
+
+variable force_update {
+    type = string
+    default = "true"
+}
+
 variable dependencies {
   description = "Create a dependency between the resources in this module to the interpolated values in this list (and thus the source resources). In other words, the resources in this module will now depend on the resources backing the values in this list such that those resources need to be created before the resources in this module, and the resources in this module need to be destroyed before the resources in the list."
   type        = list(string)
